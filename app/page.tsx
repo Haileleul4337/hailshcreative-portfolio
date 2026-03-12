@@ -620,8 +620,8 @@ export default function PhotographyPortfolioWebsite() {
                   <option>Portrait Session</option>
                   <option>Graduation Session</option>
                   <option>Event Coverage</option>
-                  <option>Brand Shoots</option>
-                  <option>Other</option>
+                  <option>Brand Shoot</option>
+                  <option>Otherssss</option>
                 </select>
               </div>
               <div>
