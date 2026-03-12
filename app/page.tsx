@@ -191,12 +191,12 @@ export default function PhotographyPortfolioWebsite() {
     { label: "Contact", href: "#contact-page" },
   ];
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleInquirySubmit = async (e) => {
+  const handleInquirySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitMessage("");
 
