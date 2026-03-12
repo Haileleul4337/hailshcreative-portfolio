@@ -115,7 +115,7 @@ export default function PhotographyPortfolioWebsite() {
   const pricing = [
     {
       title: "Mini Session",
-      price: "$180",
+      price: "$250",
       details: ["30-minute session", "1 location", "10 edited photos"],
     },
     {
