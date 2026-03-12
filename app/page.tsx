@@ -1,60 +1,95 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Camera, ExternalLink, Instagram, Mail, MapPin, Menu, Quote, Star, X } from "lucide-react";
+import {
+  ArrowUpRight,
+  Camera,
+  ExternalLink,
+  Instagram,
+  Mail,
+  MapPin,
+  Menu,
+  Quote,
+  Star,
+  X,
+} from "lucide-react";
+
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xeergwpg";
 
 export default function PhotographyPortfolioWebsite() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    instagram: "",
+    sessionType: "Portrait Session",
+    preferredDate: "",
+    location: "",
+    budget: "",
+    hearAbout: "",
+    details: "",
+  });
 
   const featuredWorks = [
     {
       title: "Graduation Glow",
       category: "Graduation",
-      image:
-        "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/graduation1.jpg",
+      href: "#contact-page",
+      cta: "Book graduation session",
     },
     {
       title: "Studio Portrait",
       category: "Portrait",
-      image:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/portrait1.jpg",
+      href: "#contact-page",
+      cta: "Book portrait session",
     },
     {
       title: "City Motion",
       category: "Lifestyle",
-      image:
-        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/lifestyle1.jpg",
+      href: "https://instagram.com/hailshcreative",
+      cta: "See more on Instagram",
     },
     {
       title: "Elegant Event",
       category: "Events",
-      image:
-        "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/event1.jpg",
+      href: "#contact-page",
+      cta: "Book event coverage",
     },
     {
       title: "Brand Focus",
       category: "Branding",
-      image:
-        "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/branding1.jpg",
+      href: "https://instagram.com/hailshcreative",
+      cta: "View more brand work",
     },
     {
       title: "Soft Light",
       category: "Portrait",
-      image:
-        "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/portrait2.jpg",
+      href: "https://instagram.com/hailshcreative",
+      cta: "See more portraits",
     },
     {
       title: "After Ceremony",
       category: "Graduation",
-      image:
-        "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/graduation2.jpg",
+      href: "https://instagram.com/hailshcreative",
+      cta: "More graduation photos",
     },
     {
       title: "Night Energy",
       category: "Events",
-      image:
-        "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/event2.jpg",
+      href: "https://instagram.com/hailshcreative",
+      cta: "More event coverage",
     },
   ];
 
@@ -115,7 +150,7 @@ export default function PhotographyPortfolioWebsite() {
       label: "Instagram",
       value: "@hailshcreative",
       href: "https://instagram.com/hailshcreative",
-      description: "See recent shoots, reels, and portfolio updates.",
+      description: "See recent shoots, reels, more galleries, and portfolio updates.",
       icon: Instagram,
     },
     {
@@ -126,17 +161,17 @@ export default function PhotographyPortfolioWebsite() {
       icon: Mail,
     },
     {
-      label: "Portfolio",
-      value: "View Work",
+      label: "Portfolio Highlights",
+      value: "Jump to portfolio",
       href: "#portfolio-page",
-      description: "Browse portrait, graduation, event, and branding galleries.",
+      description: "Browse portrait, graduation, event, and branding galleries on the site.",
       icon: Camera,
     },
     {
-      label: "Contact",
-      value: "Book a Session",
+      label: "Book a Session",
+      value: "Open inquiry form",
       href: "#contact-page",
-      description: "Send an inquiry for your next photo session.",
+      description: "Fill out the detailed booking form and send your inquiry instantly.",
       icon: ExternalLink,
     },
   ];
@@ -155,6 +190,68 @@ export default function PhotographyPortfolioWebsite() {
     { label: "Links", href: "#links-page" },
     { label: "Contact", href: "#contact-page" },
   ];
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleInquirySubmit = async (e) => {
+    e.preventDefault();
+    setSubmitMessage("");
+
+    if (FORMSPREE_ENDPOINT.includes("YOUR_FORM_ID")) {
+      setSubmitMessage("Add your real Formspree endpoint first, then the form will send directly to your email.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          instagram: formData.instagram,
+          sessionType: formData.sessionType,
+          preferredDate: formData.preferredDate,
+          location: formData.location,
+          budget: formData.budget,
+          hearAbout: formData.hearAbout,
+          details: formData.details,
+          _subject: `New ${formData.sessionType} Inquiry - ${formData.fullName || "Hailsh Creative Website"}`,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Submission failed");
+      }
+
+      setSubmitMessage("Inquiry sent successfully. Check your email for the new lead.");
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        instagram: "",
+        sessionType: "Portrait Session",
+        preferredDate: "",
+        location: "",
+        budget: "",
+        hearAbout: "",
+        details: "",
+      });
+    } catch (error) {
+      setSubmitMessage("Something went wrong while sending the inquiry. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
@@ -227,9 +324,7 @@ export default function PhotographyPortfolioWebsite() {
             </h1>
             <p className="mt-3 text-xl text-white/75 md:text-2xl">Founder of Hailsh Creative</p>
             <p className="mt-6 max-w-2xl text-base leading-7 text-white/70 md:text-lg">
-              More than 5 years of experience creating portraits, graduation sessions,
-              events, and brand imagery across the DMV. Built with a premium,
-              modern style that helps your work feel established, trustworthy, and unforgettable.
+              More than 5 years of experience creating portraits, graduation sessions, events, and brand imagery across the DMV. Built with a premium, modern style that helps your work feel established, trustworthy, and unforgettable.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <a
@@ -263,19 +358,11 @@ export default function PhotographyPortfolioWebsite() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-2xl">
-              <img
-                src="https://images.unsplash.com/photo-1513279922550-250c2129b13a?auto=format&fit=crop&w=1200&q=80"
-                alt="Featured portrait"
-                className="h-full w-full object-cover"
-              />
+              <img src="/images/hero-main.jpg" alt="Featured portrait" className="h-full w-full object-cover" />
             </div>
             <div className="grid gap-4">
               <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-2xl">
-                <img
-                  src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80"
-                  alt="Photographer at work"
-                  className="h-52 w-full object-cover"
-                />
+                <img src="/images/hero-side.jpg" alt="Photographer at work" className="h-52 w-full object-cover" />
               </div>
               <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-2xl">
                 <p className="text-sm uppercase tracking-[0.25em] text-white/40">Hailsh Creative</p>
@@ -316,7 +403,7 @@ export default function PhotographyPortfolioWebsite() {
             <p className="text-sm uppercase tracking-[0.3em] text-white/40">Portfolio Page</p>
             <h2 className="mt-3 text-3xl font-semibold md:text-5xl">Featured galleries</h2>
             <p className="mt-4 max-w-2xl text-white/65">
-              This section now works like a dedicated portfolio page area, with category filters and a stronger gallery layout.
+              Every card can now link somewhere useful, like a booking section, your Instagram, or a future full gallery page.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -338,8 +425,9 @@ export default function PhotographyPortfolioWebsite() {
 
         <div className="grid auto-rows-[220px] gap-5 md:grid-cols-3">
           {filteredWorks.map((item, index) => (
-            <div
+            <a
               key={item.title}
+              href={item.href}
               className={`group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 ${
                 index % 4 === 0 ? "md:col-span-2 md:row-span-2" : ""
               }`}
@@ -349,13 +437,39 @@ export default function PhotographyPortfolioWebsite() {
                 alt={item.title}
                 className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5">
-                <p className="text-xs uppercase tracking-[0.25em] text-white/60">{item.category}</p>
-                <h3 className="mt-2 text-xl font-semibold">{item.title}</h3>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.25em] text-white/60">{item.category}</p>
+                    <h3 className="mt-2 text-xl font-semibold">{item.title}</h3>
+                    <p className="mt-2 text-sm text-white/70">{item.cta}</p>
+                  </div>
+                  <div className="rounded-full border border-white/20 bg-black/20 p-2 text-white/80">
+                    <ArrowUpRight size={18} />
+                  </div>
+                </div>
               </div>
-            </div>
+            </a>
           ))}
+        </div>
+
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <a href="https://instagram.com/hailshcreative" className="rounded-[2rem] border border-white/10 bg-black/20 p-5 transition hover:border-white/30">
+            <p className="text-sm uppercase tracking-[0.25em] text-white/40">More portraits</p>
+            <p className="mt-3 text-xl font-semibold">Instagram gallery</p>
+            <p className="mt-2 text-white/60">Use this for additional photos until you add full portfolio pages.</p>
+          </a>
+          <a href="#pricing-page" className="rounded-[2rem] border border-white/10 bg-black/20 p-5 transition hover:border-white/30">
+            <p className="text-sm uppercase tracking-[0.25em] text-white/40">Ready to book</p>
+            <p className="mt-3 text-xl font-semibold">See packages</p>
+            <p className="mt-2 text-white/60">Guide visitors straight to pricing after they like your work.</p>
+          </a>
+          <a href="#contact-page" className="rounded-[2rem] border border-white/10 bg-black/20 p-5 transition hover:border-white/30">
+            <p className="text-sm uppercase tracking-[0.25em] text-white/40">Start inquiry</p>
+            <p className="mt-3 text-xl font-semibold">Open booking form</p>
+            <p className="mt-2 text-white/60">Send them directly to your detailed session inquiry section.</p>
+          </a>
         </div>
       </section>
 
@@ -363,9 +477,7 @@ export default function PhotographyPortfolioWebsite() {
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8 md:p-10">
             <p className="text-sm uppercase tracking-[0.3em] text-white/40">About</p>
-            <h2 className="mt-4 text-3xl font-semibold md:text-5xl">
-              Images that feel polished, emotional, and timeless.
-            </h2>
+            <h2 className="mt-4 text-3xl font-semibold md:text-5xl">Images that feel polished, emotional, and timeless.</h2>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-white/70">
               Haileleul Mekonnen is a DMV-based photographer and the creative force behind Hailsh Creative. With more than 5 years of experience behind the camera, he specializes in creating clean, modern, and emotionally engaging imagery. His work focuses on portraits, events, graduations, and lifestyle photography, combining professional lighting, intentional composition, and natural expression. Above all, Haileleul loves what he does and brings that passion into every shoot and every final gallery.
             </p>
@@ -470,43 +582,86 @@ export default function PhotographyPortfolioWebsite() {
       </section>
 
       <section id="contact-page" className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8 md:p-10">
-            <p className="text-sm uppercase tracking-[0.3em] text-white/40">Contact Page</p>
-            <h2 className="mt-4 text-3xl font-semibold md:text-5xl">Let’s create your next set of images.</h2>
+            <p className="text-sm uppercase tracking-[0.3em] text-white/40">Booking Page</p>
+            <h2 className="mt-4 text-3xl font-semibold md:text-5xl">Book your session</h2>
             <p className="mt-5 max-w-xl text-white/70">
-              Reach out for portraits, graduation sessions, event coverage, branding shoots, or collaborations across DC, Maryland, and Virginia.
+              Fill out the inquiry form with as much detail as you can. Once your Formspree endpoint is added, the form sends directly from the website to your email without opening the visitor’s email app.
             </p>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
-                <p className="text-sm text-white/50">Studio</p>
-                <p className="mt-2 text-lg font-medium">Hailsh Creative</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
-                <p className="text-sm text-white/50">Based in</p>
-                <p className="mt-2 text-lg font-medium">DMV Area</p>
-              </div>
+            <div className="mt-8 space-y-4 text-white/75">
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">Best for portraits, graduation sessions, events, and brand shoots</div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">Includes contact info, session type, date, location, and project details</div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">Replace the Formspree placeholder once, and it keeps working on your live site</div>
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-white/10 bg-black/20 p-8 md:p-10">
-            <p className="text-sm text-white/50">Photographer</p>
-            <p className="mt-2 text-lg font-medium">Haileleul Mekonnen</p>
-            <p className="mt-6 text-sm text-white/50">Email</p>
-            <a href="mailto:hailshbusiness@gmail.com" className="mt-2 block text-lg font-medium hover:text-white/80">
-              hailshbusiness@gmail.com
-            </a>
-            <p className="mt-6 text-sm text-white/50">Instagram</p>
-            <a href="https://instagram.com/hailshcreative" className="mt-2 block text-lg font-medium hover:text-white/80">
-              @hailshcreative
-            </a>
-            <a
-              href="mailto:hailshbusiness@gmail.com"
-              className="mt-8 inline-flex w-full justify-center rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-black transition hover:scale-[1.01]"
-            >
-              Send Inquiry
-            </a>
-          </div>
+          <form onSubmit={handleInquirySubmit} className="rounded-[2rem] border border-white/10 bg-black/20 p-8 md:p-10">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-sm text-white/60">Full name</label>
+                <input name="fullName" value={formData.fullName} onChange={handleInputChange} required className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 outline-none transition focus:border-white/30" />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm text-white/60">Email</label>
+                <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 outline-none transition focus:border-white/30" />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm text-white/60">Phone number</label>
+                <input name="phone" value={formData.phone} onChange={handleInputChange} className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 outline-none transition focus:border-white/30" />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm text-white/60">Instagram handle</label>
+                <input name="instagram" value={formData.instagram} onChange={handleInputChange} placeholder="@username" className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 outline-none transition focus:border-white/30" />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm text-white/60">Session type</label>
+                <select name="sessionType" value={formData.sessionType} onChange={handleInputChange} className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 outline-none transition focus:border-white/30">
+                  <option>Portrait Session</option>
+                  <option>Graduation Session</option>
+                  <option>Event Coverage</option>
+                  <option>Brand Shoot</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div>
+                <label className="mb-2 block text-sm text-white/60">Preferred date</label>
+                <input type="date" name="preferredDate" value={formData.preferredDate} onChange={handleInputChange} className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 outline-none transition focus:border-white/30" />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm text-white/60">Preferred location</label>
+                <input name="location" value={formData.location} onChange={handleInputChange} placeholder="DC, Maryland, Virginia, studio, campus..." className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 outline-none transition focus:border-white/30" />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm text-white/60">Budget range</label>
+                <input name="budget" value={formData.budget} onChange={handleInputChange} placeholder="$200-$400" className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 outline-none transition focus:border-white/30" />
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-4">
+              <div>
+                <label className="mb-2 block text-sm text-white/60">How did you hear about Hailsh Creative?</label>
+                <input name="hearAbout" value={formData.hearAbout} onChange={handleInputChange} placeholder="Instagram, referral, website, friend..." className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 outline-none transition focus:border-white/30" />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm text-white/60">Project details</label>
+                <textarea name="details" value={formData.details} onChange={handleInputChange} rows={6} placeholder="Tell me about the shoot, the vibe you want, number of people, goals, inspiration, and anything else helpful." className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 outline-none transition focus:border-white/30" />
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-white/50">Form goes directly to your inbox after you replace the Formspree endpoint placeholder.</p>
+              <button type="submit" disabled={isSubmitting} className="inline-flex justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70">
+                {isSubmitting ? "Sending..." : "Send Inquiry"}
+              </button>
+            </div>
+
+            {submitMessage && (
+              <p className="mt-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/75">
+                {submitMessage}
+              </p>
+            )}
+          </form>
         </div>
       </section>
     </div>
