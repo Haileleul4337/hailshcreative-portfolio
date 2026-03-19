@@ -1,27 +1,68 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  ArrowUpRight,
-  Camera,
-  ExternalLink,
-  Instagram,
-  Mail,
-  MapPin,
-  Menu,
-  Quote,
-  Star,
-  X,
-} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowUpRight, Camera, ExternalLink, Instagram, Mail, Menu, X } from "lucide-react";
 
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xeergwpg";
+
+type PortfolioItem = {
+  title: string;
+  category: string;
+  image: string;
+  href: string;
+};
+
+type FormData = {
+  fullName: string;
+  email: string;
+  phone: string;
+  instagram: string;
+  sessionType: string;
+  preferredDate: string;
+  location: string;
+  budget: string;
+  details: string;
+};
+
+const imagePool = [
+  "/images/hero1.jpg",
+  "/images/hero2.jpg",
+  "/images/hero3.jpg",
+  "/images/hero4.jpg",
+  "/images/hero5.jpg",
+  "/images/hero6.jpg",
+  "/images/hero7.jpg",
+  "/images/hero8.jpg",
+];
+
+const portfolioItems: PortfolioItem[] = [
+  { title: "Portrait", category: "Portrait", image: "/images/hero1.jpg", href: "#contact" },
+  { title: "Graduation", category: "Graduation", image: "/images/hero2.jpg", href: "#contact" },
+  { title: "Events", category: "Events", image: "/images/hero3.jpg", href: "#contact" },
+  { title: "Lifestyle", category: "Lifestyle", image: "/images/hero4.jpg", href: "https://instagram.com/hailshcreative" },
+  { title: "Branding", category: "Branding", image: "/images/hero5.jpg", href: "https://instagram.com/hailshcreative" },
+  { title: "Creative", category: "Portrait", image: "/images/hero6.jpg", href: "#contact" },
+  { title: "Campus", category: "Graduation", image: "/images/hero7.jpg", href: "https://instagram.com/hailshcreative" },
+  { title: "Coverage", category: "Events", image: "/images/hero8.jpg", href: "#contact" },
+];
+
+function shuffleArray<T>(arr: T[]): T[] {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
 
 export default function PhotographyPortfolioWebsite() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
-  const [formData, setFormData] = useState({
+  const [heroImages, setHeroImages] = useState<string[]>(() => shuffleArray(imagePool).slice(0, 2));
+  const [galleryImages, setGalleryImages] = useState<PortfolioItem[]>(() => shuffleArray(portfolioItems));
+  const [formData, setFormData] = useState<FormData>({
     fullName: "",
     email: "",
     phone: "",
@@ -30,176 +71,40 @@ export default function PhotographyPortfolioWebsite() {
     preferredDate: "",
     location: "",
     budget: "",
-    hearAbout: "",
     details: "",
   });
 
-  const featuredWorks = [
-    {
-      title: "Graduation Portraits",
-      category: "Graduation",
-      image:
-        "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80",
-      href: "#contact-page",
-      cta: "Book graduation photos",
-    },
-    {
-      title: "Editorial Portrait",
-      category: "Portrait",
-      image:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80",
-      href: "#contact-page",
-      cta: "Book a portrait session",
-    },
-    {
-      title: "Lifestyle Frames",
-      category: "Lifestyle",
-      image:
-        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-      href: "https://instagram.com/hailshcreative",
-      cta: "See more on Instagram",
-    },
-    {
-      title: "Private Events",
-      category: "Events",
-      image:
-        "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80",
-      href: "#contact-page",
-      cta: "Ask about event coverage",
-    },
-    {
-      title: "Brand Storytelling",
-      category: "Branding",
-      image:
-        "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80",
-      href: "https://instagram.com/hailshcreative",
-      cta: "View more brand work",
-    },
-    {
-      title: "Soft Light Portraits",
-      category: "Portrait",
-      image:
-        "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=1200&q=80",
-      href: "https://instagram.com/hailshcreative",
-      cta: "See more portraits",
-    },
-    {
-      title: "Campus Sessions",
-      category: "Graduation",
-      image:
-        "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80",
-      href: "https://instagram.com/hailshcreative",
-      cta: "More graduation work",
-    },
-    {
-      title: "Celebration Coverage",
-      category: "Events",
-      image:
-        "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80",
-      href: "https://instagram.com/hailshcreative",
-      cta: "More event coverage",
-    },
-  ];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHeroImages(shuffleArray(imagePool).slice(0, 2));
+      setGalleryImages(shuffleArray(portfolioItems));
+    }, 10000);
 
-  const services = [
-    {
-      name: "Portrait Sessions",
-      detail: "Creative portraits, personal branding, and polished premium edits.",
-    },
-    {
-      name: "Graduation Photos",
-      detail: "Campus sessions across the DMV with clean, elevated final galleries.",
-    },
-    {
-      name: "Event Coverage",
-      detail: "Private events, birthdays, celebrations, and memorable moments captured naturally.",
-    },
-    {
-      name: "Brand Content",
-      detail: "Photo content for businesses, products, creators, and social campaigns.",
-    },
-  ];
+    return () => clearInterval(interval);
+  }, []);
 
-  const pricing = [
-    {
-      title: "Mini Session",
-      price: "$180",
-      details: ["30-minute session", "1 location", "10 edited photos"],
-    },
-    {
-      title: "Signature Session",
-      price: "$325",
-      details: ["1-hour session", "2 outfit options", "25 edited photos"],
-    },
-    {
-      title: "Event Coverage",
-      price: "$450+",
-      details: ["2-hour minimum", "Candid + posed coverage", "Online gallery delivery"],
-    },
-  ];
+  const categories = useMemo(
+    () => ["All", ...new Set(portfolioItems.map((item) => item.category))],
+    [],
+  );
 
-  const testimonials = [
-    {
-      name: "Portrait Client",
-      text: "The whole process felt smooth and professional, and the photos came out clean, sharp, and premium.",
-    },
-    {
-      name: "Graduation Client",
-      text: "He helped with posing, found the best light, and delivered images that looked confident and timeless.",
-    },
-    {
-      name: "Event Client",
-      text: "Reliable, creative, and easy to work with. The gallery captured the energy of the event beautifully.",
-    },
-  ];
-
-  const links = [
-    {
-      label: "Instagram",
-      value: "@hailshcreative",
-      href: "https://instagram.com/hailshcreative",
-      description: "Recent work, reels, behind the scenes, and additional galleries.",
-      icon: Instagram,
-    },
-    {
-      label: "Email",
-      value: "hailshbusiness@gmail.com",
-      href: "mailto:hailshbusiness@gmail.com",
-      description: "Bookings, collaborations, and business inquiries.",
-      icon: Mail,
-    },
-    {
-      label: "Portfolio",
-      value: "Browse featured work",
-      href: "#portfolio-page",
-      description: "Portrait, graduation, event, and branding highlights.",
-      icon: Camera,
-    },
-    {
-      label: "Book a Session",
-      value: "Open inquiry form",
-      href: "#contact-page",
-      description: "Send a detailed inquiry directly from the website.",
-      icon: ExternalLink,
-    },
-  ];
-
-  const categories = useMemo(() => ["All", ...new Set(featuredWorks.map((item) => item.category))], [featuredWorks]);
-
-  const filteredWorks =
-    selectedCategory === "All"
-      ? featuredWorks
-      : featuredWorks.filter((item) => item.category === selectedCategory);
+  const filteredWorks = useMemo(() => {
+    const source = galleryImages.length ? galleryImages : portfolioItems;
+    if (selectedCategory === "All") return source;
+    return source.filter((item) => item.category === selectedCategory);
+  }, [galleryImages, selectedCategory]);
 
   const navItems = [
-    { label: "Home", href: "#home" },
-    { label: "Portfolio", href: "#portfolio-page" },
-    { label: "Pricing", href: "#pricing-page" },
-    { label: "Links", href: "#links-page" },
-    { label: "Contact", href: "#contact-page" },
+    { label: "Work", href: "#portfolio" },
+    { label: "About", href: "#about" },
+    { label: "Experience", href: "#experience" },
+    { label: "Pricing", href: "#pricing" },
+    { label: "Book", href: "#contact" },
   ];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -209,7 +114,7 @@ export default function PhotographyPortfolioWebsite() {
     setSubmitMessage("");
 
     if (FORMSPREE_ENDPOINT.includes("YOUR_FORM_ID")) {
-      setSubmitMessage("The booking form is almost ready. Add your real Formspree endpoint to activate submissions.");
+      setSubmitMessage("Add your Formspree endpoint to activate the form.");
       return;
     }
 
@@ -223,17 +128,8 @@ export default function PhotographyPortfolioWebsite() {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          fullName: formData.fullName,
-          email: formData.email,
-          phone: formData.phone,
-          instagram: formData.instagram,
-          sessionType: formData.sessionType,
-          preferredDate: formData.preferredDate,
-          location: formData.location,
-          budget: formData.budget,
-          hearAbout: formData.hearAbout,
-          details: formData.details,
-          _subject: `New ${formData.sessionType} Inquiry - ${formData.fullName || "Hailsh Creative Website"}`,
+          ...formData,
+          _subject: `New ${formData.sessionType} Inquiry - ${formData.fullName || "Hailsh Creative"}`,
         }),
       });
 
@@ -241,7 +137,7 @@ export default function PhotographyPortfolioWebsite() {
         throw new Error("Submission failed");
       }
 
-      setSubmitMessage("Inquiry sent successfully. I’ll be in touch soon.");
+      setSubmitMessage("Inquiry sent successfully.");
       setFormData({
         fullName: "",
         email: "",
@@ -251,50 +147,49 @@ export default function PhotographyPortfolioWebsite() {
         preferredDate: "",
         location: "",
         budget: "",
-        hearAbout: "",
         details: "",
       });
-    } catch (error) {
-      setSubmitMessage("Something went wrong while sending the inquiry. Please try again.");
+    } catch {
+      setSubmitMessage("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-neutral-950/85 backdrop-blur">
+    <div className="min-h-screen bg-[#0f0c05] text-white">
+      <header className="sticky top-0 z-50 border-b border-[#f3c94b]/15 bg-[#0f0c05]/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <a href="#home" className="flex min-w-0 items-center gap-3">
-            <svg width="40" height="40" viewBox="0 0 100 100" className="shrink-0 rounded-full border border-white/20 p-1">
-              <circle cx="50" cy="50" r="40" stroke="white" strokeWidth="4" fill="none" />
-              <circle cx="50" cy="50" r="18" stroke="white" strokeWidth="4" fill="none" />
-              <circle cx="50" cy="50" r="6" fill="white" />
-            </svg>
+            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#f3c94b]/45 bg-[#f3c94b]/10 text-[#f3c94b]">
+              <Camera size={18} />
+            </div>
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold tracking-[0.25em] uppercase">Hailsh</p>
-              <p className="truncate text-xs text-white/50">Creative</p>
+              <p className="truncate text-sm font-semibold uppercase tracking-[0.28em] text-[#f3c94b]">
+                Hailsh
+              </p>
+              <p className="truncate text-xs text-white/55">Creative</p>
             </div>
           </a>
 
           <nav className="hidden items-center gap-8 text-sm text-white/70 md:flex">
             {navItems.map((item) => (
-              <a key={item.label} href={item.href} className="transition hover:text-white">
+              <a key={item.label} href={item.href} className="transition hover:text-[#f3c94b]">
                 {item.label}
               </a>
             ))}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2">
             <a
-              href="#contact-page"
-              className="hidden rounded-full border border-white/20 px-4 py-2 text-sm font-medium transition hover:border-white hover:bg-white hover:text-black md:inline-flex"
+              href="#contact"
+              className="hidden rounded-full bg-[#f3c94b] px-4 py-2 text-sm font-semibold text-black transition hover:opacity-90 md:inline-flex"
             >
-              Book a Session
+              Book
             </a>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="rounded-full border border-white/15 p-2 md:hidden"
+              className="rounded-full border border-[#f3c94b]/20 p-2 text-[#f3c94b] md:hidden"
               aria-label="Toggle menu"
             >
               {menuOpen ? <X size={18} /> : <Menu size={18} />}
@@ -303,15 +198,10 @@ export default function PhotographyPortfolioWebsite() {
         </div>
 
         {menuOpen && (
-          <div className="border-t border-white/10 bg-neutral-950 md:hidden">
+          <div className="border-t border-[#f3c94b]/10 bg-[#0f0c05] md:hidden">
             <div className="mx-auto flex max-w-7xl flex-col px-4 py-3 text-sm text-white/75 sm:px-6">
               {navItems.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="py-3 transition hover:text-white"
-                  onClick={() => setMenuOpen(false)}
-                >
+                <a key={item.label} href={item.href} className="py-3" onClick={() => setMenuOpen(false)}>
                   {item.label}
                 </a>
               ))}
@@ -321,70 +211,70 @@ export default function PhotographyPortfolioWebsite() {
       </header>
 
       <section id="home" className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.08),transparent_22%)]" />
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 sm:py-16 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(243,201,75,0.16),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(243,201,75,0.10),transparent_24%)]" />
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[0.95fr_1.05fr] lg:px-8 lg:py-24">
           <div className="flex flex-col justify-center">
-            <p className="mb-4 flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-white/50 sm:text-sm sm:tracking-[0.35em]">
-              <MapPin size={14} /> DMV Photographer
-            </p>
-            <h1 className="max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl lg:text-7xl">
+            <p className="text-xs uppercase tracking-[0.35em] text-[#f3c94b]">DMV Photographer</p>
+            <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl lg:text-7xl">
               Haileleul Mekonnen
             </h1>
-            <p className="mt-3 text-lg text-white/75 sm:text-xl lg:text-2xl">Founder of Hailsh Creative</p>
-            <p className="mt-5 max-w-2xl text-sm leading-7 text-white/70 sm:text-base md:text-lg">
-              More than 5 years of experience creating portraits, graduation sessions, events, and brand imagery across the DMV. Premium visuals, polished direction, and a client experience that feels effortless from inquiry to delivery.
+            <p className="mt-3 text-lg text-[#f3c94b] sm:text-xl">Hailsh Creative</p>
+            <p className="mt-4 max-w-xl text-sm leading-7 text-white/70 sm:text-base">
+              I’m a DMV-based photographer and videographer focused on portraits, graduations, events, and visual storytelling. I want every session to feel relaxed, natural, and personal so you leave with photos and videos that feel like you.
             </p>
-            <div className="mt-8 grid gap-3 sm:flex sm:flex-wrap">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
-                href="#portfolio-page"
-                className="inline-flex justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition hover:scale-[1.02]"
+                href="#portfolio"
+                className="inline-flex justify-center rounded-full bg-[#f3c94b] px-6 py-3 text-sm font-semibold text-black"
               >
-                Explore Portfolio
+                View Work
               </a>
               <a
-                href="#pricing-page"
-                className="inline-flex justify-center rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white"
+                href="#contact"
+                className="inline-flex justify-center rounded-full border border-[#f3c94b]/30 px-6 py-3 text-sm font-semibold text-[#f3c94b]"
               >
-                View Pricing
+                Book Session
               </a>
             </div>
-            <div className="mt-8 grid gap-3 sm:grid-cols-3 sm:gap-4">
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-5">
-                <p className="text-2xl font-semibold sm:text-3xl">5+</p>
-                <p className="mt-2 text-sm text-white/55">Years of experience</p>
+            <div className="mt-8 grid grid-cols-3 gap-3">
+              <div className="rounded-3xl border border-[#f3c94b]/12 bg-white/5 p-4 text-center">
+                <p className="text-xl font-semibold text-[#f3c94b]">5+</p>
+                <p className="mt-1 text-xs text-white/55">Years</p>
               </div>
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-5">
-                <p className="text-2xl font-semibold sm:text-3xl">DMV</p>
-                <p className="mt-2 text-sm text-white/55">Based and available locally</p>
+              <div className="rounded-3xl border border-[#f3c94b]/12 bg-white/5 p-4 text-center">
+                <p className="text-xl font-semibold text-[#f3c94b]">DMV</p>
+                <p className="mt-1 text-xs text-white/55">Based</p>
               </div>
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-5">
-                <p className="text-2xl font-semibold sm:text-3xl">Premium</p>
-                <p className="mt-2 text-sm text-white/55">Clean, polished edits</p>
+              <div className="rounded-3xl border border-[#f3c94b]/12 bg-white/5 p-4 text-center">
+                <p className="text-xl font-semibold text-[#f3c94b]">Photo + Video</p>
+                <p className="mt-1 text-xs text-white/55">Available</p>
               </div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/5 shadow-2xl sm:rounded-[2rem]">
+            <div className="overflow-hidden rounded-[2rem] border border-[#f3c94b]/15 bg-black/20">
               <img
-                src="https://images.unsplash.com/photo-1513279922550-250c2129b13a?auto=format&fit=crop&w=1400&q=80"
-                alt="Portrait photography"
-                className="h-[380px] w-full object-cover sm:h-full"
+                src={heroImages[0] || imagePool[0]}
+                alt="Featured work"
+                className="h-[380px] w-full object-cover sm:h-[520px] lg:h-[620px]"
               />
             </div>
             <div className="grid gap-4">
-              <div className="overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/5 shadow-2xl sm:rounded-[2rem]">
+              <div className="overflow-hidden rounded-[2rem] border border-[#f3c94b]/15 bg-black/20">
                 <img
-                  src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80"
-                  alt="Creative photography"
-                  className="h-52 w-full object-cover sm:h-56"
+                  src={heroImages[1] || imagePool[1]}
+                  alt="Featured work"
+                  className="h-[220px] w-full object-cover sm:h-[250px] lg:h-[300px]"
                 />
               </div>
-              <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-5 shadow-2xl sm:rounded-[2rem] sm:p-6">
-                <p className="text-xs uppercase tracking-[0.25em] text-white/40 sm:text-sm">Hailsh Creative</p>
-                <p className="mt-3 text-3xl font-semibold sm:text-4xl">Photography</p>
-                <p className="mt-2 text-sm text-white/60 sm:text-base">
-                  Portraits, graduations, events, and branded visuals with a refined modern look.
+              <div className="rounded-[2rem] border border-[#f3c94b]/15 bg-[#161108] p-6">
+                <p className="text-xs uppercase tracking-[0.28em] text-[#f3c94b]">
+                  Portraits • Graduations • Events
+                </p>
+                <p className="mt-3 text-3xl font-semibold">DMV Photography</p>
+                <p className="mt-2 text-sm text-white/60">
+                  Clean, natural photos with a polished finish.
                 </p>
               </div>
             </div>
@@ -392,45 +282,126 @@ export default function PhotographyPortfolioWebsite() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <div className="grid gap-4 md:grid-cols-3">
-          {testimonials.map((item) => (
-            <div key={item.name} className="rounded-[1.75rem] border border-white/10 bg-white/5 p-5 sm:rounded-[2rem] sm:p-6">
-              <Quote className="mb-4 text-white/40" size={20} />
-              <p className="text-sm leading-7 text-white/70">{item.text}</p>
-              <div className="mt-5 flex items-center justify-between gap-3">
-                <p className="text-sm font-medium text-white/90">{item.name}</p>
-                <div className="flex shrink-0 gap-1 text-white/70">
-                  <Star size={14} fill="currentColor" />
-                  <Star size={14} fill="currentColor" />
-                  <Star size={14} fill="currentColor" />
-                  <Star size={14} fill="currentColor" />
-                  <Star size={14} fill="currentColor" />
-                </div>
+      <section id="about" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div className="overflow-hidden rounded-[2rem] border border-[#f3c94b]/12 bg-black/20">
+            <img
+              src="/images/about-me.jpg"
+              alt="Haileleul Mekonnen"
+              className="h-[420px] w-full object-cover sm:h-[520px]"
+            />
+          </div>
+          <div className="rounded-[2rem] border border-[#f3c94b]/12 bg-[#161108] p-6 sm:p-8 md:p-10">
+            <p className="text-sm uppercase tracking-[0.3em] text-[#f3c94b]">About</p>
+            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl md:text-5xl">Behind the camera</h2>
+            <p className="mt-5 text-sm leading-8 text-white/70 sm:text-base">
+              I’m Haileleul Mekonnen, the photographer behind Hailsh Creative. I’ve been shooting for over 5 years, working with people across the DMV on portraits, graduations, and events.
+            </p>
+            <p className="mt-4 text-sm leading-8 text-white/70 sm:text-base">
+              I know being in front of the camera can feel awkward, so I focus on making the whole experience comfortable and easy. I’ll guide you through posing, help you find the best light, and make sure you feel confident throughout the shoot.
+            </p>
+            <p className="mt-4 text-sm leading-8 text-white/70 sm:text-base">
+              At the end, you don’t just get photos—you get images that actually feel like you, just at your best.
+            </p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-[#f3c94b]/12 bg-black/20 p-4">
+                <p className="text-xs uppercase tracking-[0.22em] text-[#f3c94b]">Service</p>
+                <p className="mt-2 text-sm text-white/75">Photo + Video</p>
+              </div>
+              <div className="rounded-2xl border border-[#f3c94b]/12 bg-black/20 p-4">
+                <p className="text-xs uppercase tracking-[0.22em] text-[#f3c94b]">Location</p>
+                <p className="mt-2 text-sm text-white/75">DMV Area</p>
+              </div>
+              <div className="rounded-2xl border border-[#f3c94b]/12 bg-black/20 p-4">
+                <p className="text-xs uppercase tracking-[0.22em] text-[#f3c94b]">Turnaround</p>
+                <p className="mt-2 text-sm text-white/75">Fast Delivery</p>
               </div>
             </div>
-          ))}
+          </div>
         </div>
       </section>
 
-      <section id="portfolio-page" className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
-        <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-white/40">Portfolio</p>
-            <h2 className="mt-3 text-3xl font-semibold sm:text-4xl md:text-5xl">Featured work</h2>
-            <p className="mt-4 max-w-2xl text-sm text-white/65 sm:text-base">
-              A curated mix of portraits, graduation work, events, and lifestyle imagery.
-            </p>
+      <section id="experience" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+          <div className="rounded-[2rem] border border-[#f3c94b]/12 bg-[#161108] p-6 sm:p-8 md:p-10">
+            <p className="text-sm uppercase tracking-[0.3em] text-[#f3c94b]">What to expect</p>
+            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl md:text-5xl">A session that feels easy</h2>
+            <div className="mt-6 space-y-4 text-sm leading-8 text-white/70 sm:text-base">
+              <p>
+                I’ll help you with the details before the shoot, including location ideas, timing, outfit direction, and the kind of look you want.
+              </p>
+              <p>
+                During the session, I guide you the whole way so you never feel lost in front of the camera. I pay attention to the little things—angles, posture, light, and expressions.
+              </p>
+              <p>
+                After the shoot, I carefully edit the final images so they still feel natural while looking polished and professional.
+              </p>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-2 sm:gap-3">
+          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+            <div className="rounded-[2rem] border border-[#f3c94b]/12 bg-black/20 p-6">
+              <p className="text-xs uppercase tracking-[0.24em] text-[#f3c94b]">My style</p>
+              <p className="mt-3 text-2xl font-semibold">Clean, warm, and natural</p>
+              <p className="mt-3 text-sm leading-7 text-white/65">
+                I like photos that feel real first—then refined. Strong light, natural tones, and a look that stays timeless.
+              </p>
+            </div>
+            <div className="rounded-[2rem] border border-[#f3c94b]/12 bg-black/20 p-6">
+              <p className="text-xs uppercase tracking-[0.24em] text-[#f3c94b]">Client trust</p>
+              <p className="mt-3 text-2xl font-semibold">People want to feel comfortable</p>
+              <p className="mt-3 text-sm leading-7 text-white/65">
+                That matters to me just as much as the photos. I want the session to feel smooth, relaxed, and worth remembering.
+              </p>
+            </div>
+            <div className="rounded-[2rem] border border-[#f3c94b]/12 bg-black/20 p-6">
+              <p className="text-xs uppercase tracking-[0.24em] text-[#f3c94b]">Delivery</p>
+              <p className="mt-3 text-2xl font-semibold">Edited with care</p>
+              <p className="mt-3 text-sm leading-7 text-white/65">
+                Your final gallery is edited with attention to detail so the images feel finished without looking overdone.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="testimonials" className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="rounded-[2rem] border border-[#f3c94b]/12 bg-[#161108] p-6">
+            <p className="text-sm leading-8 text-white/70">
+              “The whole shoot felt comfortable from the start. I usually don’t know how to pose, but he made it easy and the photos came out so natural.”
+            </p>
+            <p className="mt-5 text-sm font-medium text-[#f3c94b]">Portrait Client</p>
+          </div>
+          <div className="rounded-[2rem] border border-[#f3c94b]/12 bg-[#161108] p-6">
+            <p className="text-sm leading-8 text-white/70">
+              “My graduation photos came out exactly how I wanted. Clean, confident, and high quality. He really knows how to work with lighting and location.”
+            </p>
+            <p className="mt-5 text-sm font-medium text-[#f3c94b]">Graduation Client</p>
+          </div>
+          <div className="rounded-[2rem] border border-[#f3c94b]/12 bg-[#161108] p-6">
+            <p className="text-sm leading-8 text-white/70">
+              “Professional, easy to work with, and creative. The event coverage captured both the important moments and the energy of the night.”
+            </p>
+            <p className="mt-5 text-sm font-medium text-[#f3c94b]">Event Client</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="portfolio" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-sm uppercase tracking-[0.3em] text-[#f3c94b]/85">Portfolio</p>
+            <h2 className="mt-3 text-3xl font-semibold sm:text-4xl md:text-5xl">Featured</h2>
+          </div>
+          <div className="flex flex-wrap gap-2">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
                 className={`rounded-full px-4 py-2 text-sm transition ${
                   selectedCategory === category
-                    ? "bg-white text-black"
-                    : "border border-white/15 text-white/70 hover:border-white/30 hover:text-white"
+                    ? "bg-[#f3c94b] text-black"
+                    : "border border-[#f3c94b]/20 text-white/70 hover:border-[#f3c94b]/35 hover:text-white"
                 }`}
               >
                 {category}
@@ -442,9 +413,9 @@ export default function PhotographyPortfolioWebsite() {
         <div className="grid gap-4 sm:gap-5 md:grid-cols-3 md:auto-rows-[220px]">
           {filteredWorks.map((item, index) => (
             <a
-              key={item.title}
+              key={`${item.title}-${index}`}
               href={item.href}
-              className={`group relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/5 sm:rounded-[2rem] ${
+              className={`group relative overflow-hidden rounded-[2rem] border border-[#f3c94b]/12 bg-black/20 ${
                 index % 4 === 0 ? "md:col-span-2 md:row-span-2" : ""
               }`}
             >
@@ -455,227 +426,206 @@ export default function PhotographyPortfolioWebsite() {
                   index % 4 === 0 ? "h-[420px] md:h-full" : "h-[320px] md:h-full"
                 }`}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
-                <div className="flex items-end justify-between gap-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.25em] text-white/60">{item.category}</p>
-                    <h3 className="mt-2 text-lg font-semibold sm:text-xl">{item.title}</h3>
-                    <p className="mt-2 text-sm text-white/70">{item.cta}</p>
-                  </div>
-                  <div className="rounded-full border border-white/20 bg-black/20 p-2 text-white/80">
-                    <ArrowUpRight size={18} />
-                  </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-4 sm:p-5">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.25em] text-[#f3c94b]">{item.category}</p>
+                  <h3 className="mt-2 text-lg font-semibold sm:text-xl">{item.title}</h3>
+                </div>
+                <div className="rounded-full border border-[#f3c94b]/35 bg-black/30 p-2 text-[#f3c94b]">
+                  <ArrowUpRight size={18} />
                 </div>
               </div>
             </a>
           ))}
         </div>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          <a href="https://instagram.com/hailshcreative" className="rounded-[1.75rem] border border-white/10 bg-black/20 p-5 transition hover:border-white/30 sm:rounded-[2rem]">
-            <p className="text-sm uppercase tracking-[0.25em] text-white/40">More portraits</p>
-            <p className="mt-3 text-xl font-semibold">Instagram gallery</p>
-            <p className="mt-2 text-white/60">Browse more recent shoots and additional portfolio updates.</p>
-          </a>
-          <a href="#pricing-page" className="rounded-[1.75rem] border border-white/10 bg-black/20 p-5 transition hover:border-white/30 sm:rounded-[2rem]">
-            <p className="text-sm uppercase tracking-[0.25em] text-white/40">Pricing</p>
-            <p className="mt-3 text-xl font-semibold">See packages</p>
-            <p className="mt-2 text-white/60">Quick view of starting session rates and coverage options.</p>
-          </a>
-          <a href="#contact-page" className="rounded-[1.75rem] border border-white/10 bg-black/20 p-5 transition hover:border-white/30 sm:rounded-[2rem]">
-            <p className="text-sm uppercase tracking-[0.25em] text-white/40">Inquiry</p>
-            <p className="mt-3 text-xl font-semibold">Start your booking</p>
-            <p className="mt-2 text-white/60">Send details for your shoot directly through the website.</p>
-          </a>
-        </div>
       </section>
 
-      <section id="about" className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6 sm:rounded-[2rem] sm:p-8 md:p-10">
-            <p className="text-sm uppercase tracking-[0.3em] text-white/40">About</p>
-            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl md:text-5xl">Images that feel polished, emotional, and timeless.</h2>
-            <p className="mt-6 max-w-3xl text-base leading-8 text-white/70 sm:text-lg">
-              Haileleul Mekonnen is a DMV-based photographer and the creative force behind Hailsh Creative. With more than 5 years of experience behind the camera, he creates clean, modern, and emotionally engaging imagery across portraits, events, graduations, and lifestyle photography. Every session is shaped with intentional direction, flattering light, and a premium final look.
-            </p>
-          </div>
-          <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6 sm:rounded-[2rem] sm:p-8 md:p-10">
-            <p className="text-sm uppercase tracking-[0.3em] text-white/40">Why clients book</p>
-            <div className="mt-6 space-y-4 text-white/75">
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">Clean editing with a premium look</div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">Strong posing direction and natural expressions</div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">DMV local knowledge for locations and timing</div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">Professional, easy client experience</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="services" className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
-        <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6 sm:rounded-[2rem] sm:p-8 md:p-10">
-          <p className="text-sm uppercase tracking-[0.3em] text-white/40">Services</p>
-          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {services.map((service) => (
-              <div key={service.name} className="rounded-2xl border border-white/10 bg-black/20 p-5">
-                <h3 className="text-lg font-medium">{service.name}</h3>
-                <p className="mt-3 text-sm leading-6 text-white/60">{service.detail}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="pricing-page" className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
-        <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6 sm:rounded-[2rem] sm:p-8 md:p-10">
-          <div className="max-w-2xl">
-            <p className="text-sm uppercase tracking-[0.3em] text-white/40">Pricing</p>
-            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl md:text-5xl">Starting packages</h2>
-            <p className="mt-4 text-sm text-white/70 sm:text-base">
-              Flexible starting rates for portraits, graduation work, and event coverage.
-            </p>
-          </div>
-          <div className="mt-8 grid gap-5 lg:grid-cols-3">
-            {pricing.map((item) => (
-              <div key={item.title} className="rounded-[1.75rem] border border-white/10 bg-black/20 p-6 sm:rounded-[2rem]">
-                <p className="text-sm uppercase tracking-[0.25em] text-white/40">Package</p>
-                <h3 className="mt-3 text-2xl font-semibold">{item.title}</h3>
-                <p className="mt-4 text-4xl font-semibold">{item.price}</p>
-                <div className="mt-6 space-y-3 text-sm text-white/65">
-                  {item.details.map((detail) => (
-                    <p key={detail} className="rounded-xl border border-white/10 px-3 py-3">
-                      {detail}
-                    </p>
-                  ))}
-                </div>
-                <a
-                  href="#contact-page"
-                  className="mt-8 inline-flex rounded-full bg-white px-5 py-3 text-sm font-semibold text-black transition hover:scale-[1.02]"
-                >
-                  Inquire Now
-                </a>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="links-page" className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
-        <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6 sm:rounded-[2rem] sm:p-8 md:p-10">
-          <div className="max-w-2xl">
-            <p className="text-sm uppercase tracking-[0.3em] text-white/40">Links</p>
-            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl md:text-5xl">Everything in one place</h2>
-            <p className="mt-4 text-sm text-white/70 sm:text-base">
-              Quick access to recent work, contact details, portfolio highlights, and your booking form.
-            </p>
-          </div>
-
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            {links.map((link) => {
-              const Icon = link.icon;
-              return (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="group rounded-[1.75rem] border border-white/10 bg-black/20 p-5 transition hover:border-white/30 hover:bg-black/30 sm:rounded-[2rem] sm:p-6"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex min-w-0 gap-4">
-                      <div className="rounded-2xl border border-white/10 p-3 text-white/75">
-                        <Icon size={20} />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-sm uppercase tracking-[0.25em] text-white/40">{link.label}</p>
-                        <h3 className="mt-2 text-xl font-semibold sm:text-2xl">{link.value}</h3>
-                        <p className="mt-3 text-sm leading-6 text-white/60">{link.description}</p>
-                      </div>
-                    </div>
-                    <ExternalLink className="shrink-0 text-white/40 transition group-hover:text-white" size={18} />
+      <section id="pricing" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="grid gap-4 lg:grid-cols-3">
+          {[
+            { title: "Mini", price: "$180", items: ["30 min", "10 edits", "1 location"] },
+            { title: "Signature", price: "$325", items: ["1 hour", "25 edits", "2 looks"] },
+            { title: "Events", price: "$450+", items: ["2+ hours", "Full coverage", "Gallery delivery"] },
+          ].map((item) => (
+            <div key={item.title} className="rounded-[2rem] border border-[#f3c94b]/12 bg-[#161108] p-6">
+              <p className="text-sm uppercase tracking-[0.25em] text-[#f3c94b]">{item.title}</p>
+              <p className="mt-4 text-4xl font-semibold">{item.price}</p>
+              <div className="mt-6 space-y-3 text-sm text-white/70">
+                {item.items.map((detail) => (
+                  <div key={detail} className="rounded-xl border border-[#f3c94b]/12 px-3 py-3">
+                    {detail}
                   </div>
-                </a>
-              );
-            })}
-          </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      <section id="contact-page" className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6 sm:rounded-[2rem] sm:p-8 md:p-10">
-            <p className="text-sm uppercase tracking-[0.3em] text-white/40">Booking</p>
-            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl md:text-5xl">Book your session</h2>
-            <p className="mt-5 max-w-xl text-sm text-white/70 sm:text-base">
-              Share your vision, preferred date, and the kind of session you’re planning. Portraits, graduations, events, and brand shoots are all welcome.
+      <section id="links" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {[
+            {
+              label: "Instagram",
+              value: "@hailshcreative",
+              href: "https://instagram.com/hailshcreative",
+              icon: Instagram,
+            },
+            {
+              label: "Email",
+              value: "hailshbusiness@gmail.com",
+              href: "mailto:hailshbusiness@gmail.com",
+              icon: Mail,
+            },
+            { label: "Portfolio", value: "See Work", href: "#portfolio", icon: Camera },
+            { label: "Book", value: "Start Inquiry", href: "#contact", icon: ExternalLink },
+          ].map((link) => {
+            const Icon = link.icon;
+            return (
+              <a
+                key={link.label}
+                href={link.href}
+                className="group rounded-[2rem] border border-[#f3c94b]/12 bg-[#161108] p-5 transition hover:border-[#f3c94b]/30"
+              >
+                <div className="w-fit rounded-2xl border border-[#f3c94b]/15 bg-black/20 p-3 text-[#f3c94b]">
+                  <Icon size={20} />
+                </div>
+                <p className="mt-4 text-xs uppercase tracking-[0.25em] text-white/45">{link.label}</p>
+                <h3 className="mt-2 text-xl font-semibold">{link.value}</h3>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+
+      <section id="contact" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr]">
+          <div className="rounded-[2rem] border border-[#f3c94b]/12 bg-[#161108] p-6 sm:p-8 md:p-10">
+            <p className="text-sm uppercase tracking-[0.3em] text-[#f3c94b]">Booking</p>
+            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl md:text-5xl">Let’s shoot.</h2>
+            <p className="mt-4 text-sm leading-7 text-white/65 sm:text-base">
+              Fill the form and send your inquiry directly from the site.
             </p>
-            <div className="mt-8 space-y-4 text-white/75">
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">Portrait sessions, graduation shoots, events, and brand content</div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">Simple inquiry process with room for all the important details</div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">Replies sent to hailshbusiness@gmail.com</div>
-            </div>
           </div>
 
-          <form onSubmit={handleInquirySubmit} className="rounded-[1.75rem] border border-white/10 bg-black/20 p-6 sm:rounded-[2rem] sm:p-8 md:p-10">
+          <form
+            onSubmit={handleInquirySubmit}
+            className="rounded-[2rem] border border-[#f3c94b]/12 bg-black/20 p-6 sm:p-8 md:p-10"
+          >
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm text-white/60">Full name</label>
-                <input name="fullName" value={formData.fullName} onChange={handleInputChange} required className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 text-sm outline-none transition focus:border-white/30" />
+                <label className="mb-2 block text-sm text-white/55">Full name</label>
+                <input
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full rounded-2xl border border-[#f3c94b]/12 bg-[#120e07] px-4 py-3 text-sm outline-none transition focus:border-[#f3c94b]/35"
+                />
               </div>
               <div>
-                <label className="mb-2 block text-sm text-white/60">Email</label>
-                <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 text-sm outline-none transition focus:border-white/30" />
+                <label className="mb-2 block text-sm text-white/55">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full rounded-2xl border border-[#f3c94b]/12 bg-[#120e07] px-4 py-3 text-sm outline-none transition focus:border-[#f3c94b]/35"
+                />
               </div>
               <div>
-                <label className="mb-2 block text-sm text-white/60">Phone number</label>
-                <input name="phone" value={formData.phone} onChange={handleInputChange} className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 text-sm outline-none transition focus:border-white/30" />
+                <label className="mb-2 block text-sm text-white/55">Phone</label>
+                <input
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="w-full rounded-2xl border border-[#f3c94b]/12 bg-[#120e07] px-4 py-3 text-sm outline-none transition focus:border-[#f3c94b]/35"
+                />
               </div>
               <div>
-                <label className="mb-2 block text-sm text-white/60">Instagram handle</label>
-                <input name="instagram" value={formData.instagram} onChange={handleInputChange} placeholder="@username" className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 text-sm outline-none transition focus:border-white/30" />
+                <label className="mb-2 block text-sm text-white/55">Instagram</label>
+                <input
+                  name="instagram"
+                  value={formData.instagram}
+                  onChange={handleInputChange}
+                  placeholder="@username"
+                  className="w-full rounded-2xl border border-[#f3c94b]/12 bg-[#120e07] px-4 py-3 text-sm outline-none transition focus:border-[#f3c94b]/35"
+                />
               </div>
               <div>
-                <label className="mb-2 block text-sm text-white/60">Session type</label>
-                <select name="sessionType" value={formData.sessionType} onChange={handleInputChange} className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 text-sm outline-none transition focus:border-white/30">
+                <label className="mb-2 block text-sm text-white/55">Session</label>
+                <select
+                  name="sessionType"
+                  value={formData.sessionType}
+                  onChange={handleInputChange}
+                  className="w-full rounded-2xl border border-[#f3c94b]/12 bg-[#120e07] px-4 py-3 text-sm outline-none transition focus:border-[#f3c94b]/35"
+                >
                   <option>Portrait Session</option>
                   <option>Graduation Session</option>
                   <option>Event Coverage</option>
                   <option>Brand Shoot</option>
                   <option>Other</option>
+                  <option>Video Shoot</option>
                 </select>
               </div>
               <div>
-                <label className="mb-2 block text-sm text-white/60">Preferred date</label>
-                <input type="date" name="preferredDate" value={formData.preferredDate} onChange={handleInputChange} className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 text-sm outline-none transition focus:border-white/30" />
-              </div>
-              <div>
-                <label className="mb-2 block text-sm text-white/60">Preferred location</label>
-                <input name="location" value={formData.location} onChange={handleInputChange} placeholder="DC, Maryland, Virginia, studio, campus..." className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 text-sm outline-none transition focus:border-white/30" />
-              </div>
-              <div>
-                <label className="mb-2 block text-sm text-white/60">Budget range</label>
-                <input name="budget" value={formData.budget} onChange={handleInputChange} placeholder="$200-$400" className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 text-sm outline-none transition focus:border-white/30" />
+                <label className="mb-2 block text-sm text-white/55">Preferred date</label>
+                <input
+                  type="date"
+                  name="preferredDate"
+                  value={formData.preferredDate}
+                  onChange={handleInputChange}
+                  className="w-full rounded-2xl border border-[#f3c94b]/12 bg-[#120e07] px-4 py-3 text-sm outline-none transition focus:border-[#f3c94b]/35"
+                />
               </div>
             </div>
 
             <div className="mt-4 grid gap-4">
               <div>
-                <label className="mb-2 block text-sm text-white/60">How did you hear about Hailsh Creative?</label>
-                <input name="hearAbout" value={formData.hearAbout} onChange={handleInputChange} placeholder="Instagram, referral, website, friend..." className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 text-sm outline-none transition focus:border-white/30" />
+                <label className="mb-2 block text-sm text-white/55">Location</label>
+                <input
+                  name="location"
+                  value={formData.location}
+                  onChange={handleInputChange}
+                  className="w-full rounded-2xl border border-[#f3c94b]/12 bg-[#120e07] px-4 py-3 text-sm outline-none transition focus:border-[#f3c94b]/35"
+                />
               </div>
               <div>
-                <label className="mb-2 block text-sm text-white/60">Project details</label>
-                <textarea name="details" value={formData.details} onChange={handleInputChange} rows={6} placeholder="Tell me about the shoot, the vibe you want, number of people, goals, inspiration, and anything else helpful." className="w-full rounded-2xl border border-white/10 bg-neutral-950 px-4 py-3 text-sm outline-none transition focus:border-white/30" />
+                <label className="mb-2 block text-sm text-white/55">Budget</label>
+                <input
+                  name="budget"
+                  value={formData.budget}
+                  onChange={handleInputChange}
+                  className="w-full rounded-2xl border border-[#f3c94b]/12 bg-[#120e07] px-4 py-3 text-sm outline-none transition focus:border-[#f3c94b]/35"
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm text-white/55">Details</label>
+                <textarea
+                  name="details"
+                  value={formData.details}
+                  onChange={handleInputChange}
+                  rows={5}
+                  className="w-full rounded-2xl border border-[#f3c94b]/12 bg-[#120e07] px-4 py-3 text-sm outline-none transition focus:border-[#f3c94b]/35"
+                />
               </div>
             </div>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-white/50">Complete the form and send your inquiry directly from the site.</p>
-              <button type="submit" disabled={isSubmitting} className="inline-flex justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70">
+              <p className="text-sm text-white/45">Replies go to hailshbusiness@gmail.com</p>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="inline-flex justify-center rounded-full bg-[#f3c94b] px-6 py-3 text-sm font-semibold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
+              >
                 {isSubmitting ? "Sending..." : "Send Inquiry"}
               </button>
             </div>
 
             {submitMessage && (
-              <p className="mt-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/75">
+              <p className="mt-4 rounded-2xl border border-[#f3c94b]/12 bg-[#161108] px-4 py-3 text-sm text-white/75">
                 {submitMessage}
               </p>
             )}
