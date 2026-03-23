@@ -812,6 +812,14 @@ const heroImagePool = [
   "/images/hero/hero7.jpg",
 ];
 
+// Preload critical images for faster loading
+const criticalImages = [
+  "/images/about-me.jpg",
+  ...heroImagePool.slice(0, 3),
+  ...categoryImagePools.Portrait.slice(0, 2),
+  ...categoryImagePools.Graduation.slice(0, 2),
+];
+
 const basePortfolioItems: PortfolioItem[] = [
   {
     title: "Portrait",
@@ -835,7 +843,7 @@ const basePortfolioItems: PortfolioItem[] = [
     title: "Lifestyle",
     category: "Lifestyle",
     image: categoryImagePools.Lifestyle[0],
-    href: "https://instagram.com/hailshcreative",
+    href: "#contact",
   },
 ];
 
@@ -862,13 +870,27 @@ function generateRandomPortfolioItems(): PortfolioItem[] {
   }));
 }
 
-// Image component with loading state and error handling
-const OptimizedImage = ({ src, alt, className, objectFit = "cover" }: { src: string; alt: string; className?: string; objectFit?: "cover" | "contain" }) => {
+// Preload images function for faster loading
+const preloadImages = (urls: string[]) => {
+  urls.forEach((url) => {
+    const img = new Image();
+    img.src = url;
+  });
+};
+
+// Image component with optimized loading
+const OptimizedImage = ({ src, alt, className, objectFit = "cover", priority = false }: { src: string; alt: string; className?: string; objectFit?: "cover" | "contain"; priority?: boolean }) => {
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    // Reset loading state when src changes
+    setIsLoading(true);
+    setImageError(false);
+  }, [src]);
+
   const handleError = () => {
-    console.error(`Failed to load image: ${src}`);
+    console.warn(`Failed to load image: ${src}`);
     setImageError(true);
     setIsLoading(false);
   };
@@ -883,14 +905,13 @@ const OptimizedImage = ({ src, alt, className, objectFit = "cover" }: { src: str
         <div className="text-center">
           <Camera size={32} className="mx-auto mb-2 text-[#f3c94b]/40" />
           <p className="text-xs text-white/40">Image not found</p>
-          <p className="text-xs text-white/30 mt-1">{src.split('/').pop()}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full overflow-hidden">
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-[#161108]">
           <div className="h-8 w-8 animate-pulse rounded-full bg-[#f3c94b]/20"></div>
@@ -903,6 +924,7 @@ const OptimizedImage = ({ src, alt, className, objectFit = "cover" }: { src: str
         style={{ objectFit }}
         onError={handleError}
         onLoad={handleLoad}
+        loading={priority ? "eager" : "lazy"}
       />
     </div>
   );
@@ -975,6 +997,7 @@ const HeroCarousel = ({ images }: { images: string[] }) => {
               src={img}
               alt={`Hero ${idx + 1}`}
               className="h-full w-full object-cover"
+              loading={idx === 0 ? "eager" : "lazy"}
               onLoad={(e) => {
                 if (idx === 0) {
                   handleImageLoad(e.currentTarget);
@@ -1026,6 +1049,14 @@ const HeroCarousel = ({ images }: { images: string[] }) => {
   );
 };
 
+// Smooth scroll to section
+const scrollToSection = (sectionId: string) => {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+};
+
 export default function PhotographyPortfolioWebsite() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -1033,6 +1064,11 @@ export default function PhotographyPortfolioWebsite() {
   const [submitMessage, setSubmitMessage] = useState("");
   const [heroImages, setHeroImages] = useState<string[]>(() => shuffleArray(heroImagePool));
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>(() => generateRandomPortfolioItems());
+
+  // Preload critical images on mount
+  useEffect(() => {
+    preloadImages(criticalImages);
+  }, []);
 
   // Rotate portfolio images every 10 seconds
   useEffect(() => {
@@ -1054,12 +1090,17 @@ export default function PhotographyPortfolioWebsite() {
   }, [portfolioItems, selectedCategory]);
 
   const navItems = [
-    { label: "Work", href: "#portfolio" },
-    { label: "About", href: "#about" },
-    { label: "Experience", href: "#experience" },
-    { label: "Pricing", href: "#pricing" },
-    { label: "Book", href: "#contact" },
+    { label: "Work", href: "portfolio" },
+    { label: "About", href: "about" },
+    { label: "Experience", href: "experience" },
+    { label: "Pricing", href: "pricing" },
+    { label: "Book", href: "contact" },
   ];
+
+  const handleNavClick = (sectionId: string) => {
+    setMenuOpen(false);
+    scrollToSection(sectionId);
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -1108,7 +1149,7 @@ export default function PhotographyPortfolioWebsite() {
         throw new Error("Submission failed");
       }
 
-      setSubmitMessage("Inquiry sent successfully.");
+      setSubmitMessage("Inquiry sent successfully!");
       setFormData({
         fullName: "",
         email: "",
@@ -1120,6 +1161,9 @@ export default function PhotographyPortfolioWebsite() {
         budget: "",
         details: "",
       });
+      
+      // Clear success message after 5 seconds
+      setTimeout(() => setSubmitMessage(""), 5000);
     } catch {
       setSubmitMessage("Something went wrong. Please try again.");
     } finally {
@@ -1131,7 +1175,10 @@ export default function PhotographyPortfolioWebsite() {
     <div className="min-h-screen bg-[#0f0c05] text-white">
       <header className="sticky top-0 z-50 border-b border-[#f3c94b]/15 bg-[#0f0c05]/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <a href="#home" className="flex min-w-0 items-center gap-3">
+          <button 
+            onClick={() => scrollToSection("home")}
+            className="flex min-w-0 items-center gap-3 cursor-pointer"
+          >
             <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#f3c94b]/45 bg-[#f3c94b]/10 text-[#f3c94b]">
               <Camera size={18} />
             </div>
@@ -1141,23 +1188,27 @@ export default function PhotographyPortfolioWebsite() {
               </p>
               <p className="truncate text-xs text-white/55">Creative</p>
             </div>
-          </a>
+          </button>
 
           <nav className="hidden items-center gap-8 text-sm text-white/70 md:flex">
             {navItems.map((item) => (
-              <a key={item.label} href={item.href} className="transition hover:text-[#f3c94b]">
+              <button
+                key={item.label}
+                onClick={() => handleNavClick(item.href)}
+                className="transition hover:text-[#f3c94b] cursor-pointer"
+              >
                 {item.label}
-              </a>
+              </button>
             ))}
           </nav>
 
           <div className="flex items-center gap-2">
-            <a
-              href="#contact"
-              className="hidden rounded-full bg-[#f3c94b] px-4 py-2 text-sm font-semibold text-black transition hover:opacity-90 md:inline-flex"
+            <button
+              onClick={() => scrollToSection("contact")}
+              className="hidden rounded-full bg-[#f3c94b] px-4 py-2 text-sm font-semibold text-black transition hover:opacity-90 md:inline-flex cursor-pointer"
             >
               Book
-            </a>
+            </button>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="rounded-full border border-[#f3c94b]/20 p-2 text-[#f3c94b] md:hidden"
@@ -1172,9 +1223,13 @@ export default function PhotographyPortfolioWebsite() {
           <div className="border-t border-[#f3c94b]/10 bg-[#0f0c05] md:hidden">
             <div className="mx-auto flex max-w-7xl flex-col px-4 py-3 text-sm text-white/75 sm:px-6">
               {navItems.map((item) => (
-                <a key={item.label} href={item.href} className="py-3" onClick={() => setMenuOpen(false)}>
+                <button
+                  key={item.label}
+                  onClick={() => handleNavClick(item.href)}
+                  className="py-3 text-left cursor-pointer"
+                >
                   {item.label}
-                </a>
+                </button>
               ))}
             </div>
           </div>
@@ -1196,18 +1251,18 @@ export default function PhotographyPortfolioWebsite() {
               I'm a DMV-based photographer and videographer focused on portraits, graduations, events, and visual storytelling. I want every session to feel relaxed, natural, and personal so you leave with photos and videos that feel like you.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="#portfolio"
-                className="inline-flex justify-center rounded-full bg-[#f3c94b] px-6 py-3 text-sm font-semibold text-black"
+              <button
+                onClick={() => scrollToSection("portfolio")}
+                className="inline-flex justify-center rounded-full bg-[#f3c94b] px-6 py-3 text-sm font-semibold text-black transition hover:opacity-90 cursor-pointer"
               >
                 View Work
-              </a>
-              <a
-                href="#contact"
-                className="inline-flex justify-center rounded-full border border-[#f3c94b]/30 px-6 py-3 text-sm font-semibold text-[#f3c94b]"
+              </button>
+              <button
+                onClick={() => scrollToSection("contact")}
+                className="inline-flex justify-center rounded-full border border-[#f3c94b]/30 px-6 py-3 text-sm font-semibold text-[#f3c94b] transition hover:bg-[#f3c94b]/10 cursor-pointer"
               >
                 Book Session
-              </a>
+              </button>
             </div>
             <div className="mt-8 grid grid-cols-3 gap-3">
               <div className="rounded-3xl border border-[#f3c94b]/12 bg-white/5 p-4 text-center">
@@ -1238,6 +1293,7 @@ export default function PhotographyPortfolioWebsite() {
               alt="Haileleul Mekonnen"
               className="block w-full h-auto"
               objectFit="cover"
+              priority={true}
             />
           </div>
           <div className="rounded-[2rem] border border-[#f3c94b]/12 bg-[#161108] p-6 sm:p-8 md:p-10">
@@ -1362,10 +1418,10 @@ export default function PhotographyPortfolioWebsite() {
 
         <div className="columns-1 gap-4 space-y-4 sm:columns-2 lg:columns-3 sm:gap-5">
           {filteredWorks.map((item, index) => (
-            <a
+            <button
               key={`${item.title}-${item.image}-${index}`}
-              href={item.href}
-              className="group relative mb-4 block break-inside-avoid overflow-hidden rounded-[2rem] border border-[#f3c94b]/12 bg-black/20 transition-all duration-300 hover:scale-[1.02]"
+              onClick={() => scrollToSection("contact")}
+              className="group relative mb-4 block break-inside-avoid overflow-hidden rounded-[2rem] border border-[#f3c94b]/12 bg-black/20 transition-all duration-300 hover:scale-[1.02] cursor-pointer w-full text-left"
             >
               <OptimizedImage 
                 src={item.image} 
@@ -1383,7 +1439,7 @@ export default function PhotographyPortfolioWebsite() {
                   </div>
                 </div>
               </div>
-            </a>
+            </button>
           ))}
         </div>
       </section>
@@ -1425,22 +1481,22 @@ export default function PhotographyPortfolioWebsite() {
               href: "mailto:hailshbusiness@gmail.com",
               icon: Mail,
             },
-            { label: "Portfolio", value: "See Work", href: "#portfolio", icon: Camera },
-            { label: "Book", value: "Start Inquiry", href: "#contact", icon: ExternalLink },
+            { label: "Portfolio", value: "See Work", href: "#portfolio", icon: Camera, onClick: () => scrollToSection("portfolio") },
+            { label: "Book", value: "Start Inquiry", href: "#contact", icon: ExternalLink, onClick: () => scrollToSection("contact") },
           ].map((link) => {
             const Icon = link.icon;
             return (
-              <a
+              <button
                 key={link.label}
-                href={link.href}
-                className="group rounded-[2rem] border border-[#f3c94b]/12 bg-[#161108] p-5 transition hover:border-[#f3c94b]/30"
+                onClick={link.onClick || (() => window.open(link.href, "_blank"))}
+                className="group rounded-[2rem] border border-[#f3c94b]/12 bg-[#161108] p-5 transition hover:border-[#f3c94b]/30 cursor-pointer w-full text-left"
               >
                 <div className="w-fit rounded-2xl border border-[#f3c94b]/15 bg-black/20 p-3 text-[#f3c94b]">
                   <Icon size={20} />
                 </div>
                 <p className="mt-4 text-xs uppercase tracking-[0.25em] text-white/45">{link.label}</p>
                 <h3 className="mt-2 text-xl font-semibold">{link.value}</h3>
-              </a>
+              </button>
             );
           })}
         </div>
