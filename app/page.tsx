@@ -331,7 +331,7 @@
 //                 View Work
 //               </a>
 //               <a
-//                 href="#portfolio"
+//                 href="#contact"
 //                 className="inline-flex justify-center rounded-full border border-[#f3c94b]/30 px-6 py-3 text-sm font-semibold text-[#f3c94b]"
 //               >
 //                 Book Session
