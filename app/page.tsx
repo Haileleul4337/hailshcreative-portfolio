@@ -57,7 +57,6 @@ const galleryImages: GalleryImage[] = [
   { src: "/images/lifestyle/lifestyle4.jpg", alt: "Lifestyle shoot 4", category: "Lifestyle" },
   { src: "/images/lifestyle/lifestyle5.jpg", alt: "Lifestyle shoot 5", category: "Lifestyle" },
   { src: "/images/lifestyle/lifestyle6.jpg", alt: "Lifestyle shoot 6", category: "Lifestyle" },
-  { src: "/images/lifestyle/lifestyle7.jpg", alt: "Lifestyle shoot 7", category: "Lifestyle" },
 ];
 
 const heroSlides = [
