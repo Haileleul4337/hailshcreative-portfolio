@@ -20,52 +20,52 @@ const brandLogo = "/logo/hailsh-creative-logo.png";
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xeergwpg";
 
 const galleryImages: GalleryImage[] = [
-  { src: "/images/hero/hero1.jpg", alt: "Event photography", category: "Events" },
-  { src: "/images/hero/hero3.jpg", alt: "Event photography", category: "Events" },
-  { src: "/images/hero/hero4.jpg", alt: "Event photography", category: "Events" },
-  { src: "/images/hero/hero5.jpg", alt: "Graduation photography", category: "Graduation" },
-  { src: "/images/portraits/portrait1.jpg", alt: "Portrait session 1", category: "Portrait" },
-  { src: "/images/portraits/portrait2.jpg", alt: "Portrait session 2", category: "Portrait" },
-  { src: "/images/portraits/portrait3.jpg", alt: "Portrait session 3", category: "Portrait" },
-  { src: "/images/portraits/portrait4.jpg", alt: "Portrait session 4", category: "Portrait" },
-  { src: "/images/portraits/portrait5.jpg", alt: "Portrait session 5", category: "Portrait" },
-  { src: "/images/portraits/portrait6.jpg", alt: "Portrait session 6", category: "Portrait" },
-  { src: "/images/portraits/portrait7.jpg", alt: "Portrait session 7", category: "Portrait" },
-  { src: "/images/portraits/portrait8.jpg", alt: "Portrait session 8", category: "Portrait" },
-  { src: "/images/portraits/portrait9.jpg", alt: "Portrait session 9", category: "Portrait" },
-  { src: "/images/graduations/graduation1.jpg", alt: "Graduation session 1", category: "Graduation" },
-  { src: "/images/graduations/graduation2.jpg", alt: "Graduation session 2", category: "Graduation" },
-  { src: "/images/graduations/graduation3.jpg", alt: "Graduation session 3", category: "Graduation" },
-  { src: "/images/graduations/graduation4.jpg", alt: "Graduation session 4", category: "Graduation" },
-  { src: "/images/graduations/graduation5.jpg", alt: "Graduation session 5", category: "Graduation" },
-  { src: "/images/graduations/graduation6.jpg", alt: "Graduation session 6", category: "Graduation" },
-  { src: "/images/graduations/graduation7.jpg", alt: "Graduation session 7", category: "Graduation" },
-  { src: "/images/events/event1.jpg", alt: "Event coverage 1", category: "Events" },
-  { src: "/images/events/event2.jpg", alt: "Event coverage 2", category: "Events" },
-  { src: "/images/events/event3.jpg", alt: "Event coverage 3", category: "Events" },
-  { src: "/images/events/event4.jpg", alt: "Event coverage 4", category: "Events" },
-  { src: "/images/events/event5.jpg", alt: "Event coverage 5", category: "Events" },
-  { src: "/images/events/event6.jpg", alt: "Event coverage 6", category: "Events" },
-  { src: "/images/events/event7.jpg", alt: "Event coverage 7", category: "Events" },
-  { src: "/images/events/event8.jpg", alt: "Event coverage 8", category: "Events" },
-  { src: "/images/events/event9.jpg", alt: "Event coverage 9", category: "Events" },
-  { src: "/images/events/event10.jpg", alt: "Event coverage 10", category: "Events" },
-  { src: "/images/events/event11.jpg", alt: "Event coverage 11", category: "Events" },
-  { src: "/images/lifestyle/lifestyle1.jpg", alt: "Lifestyle shoot 1", category: "Lifestyle" },
-  { src: "/images/lifestyle/lifestyle2.jpg", alt: "Lifestyle shoot 2", category: "Lifestyle" },
-  { src: "/images/lifestyle/lifestyle3.jpg", alt: "Lifestyle shoot 3", category: "Lifestyle" },
-  { src: "/images/lifestyle/lifestyle4.jpg", alt: "Lifestyle shoot 4", category: "Lifestyle" },
-  { src: "/images/lifestyle/lifestyle5.jpg", alt: "Lifestyle shoot 5", category: "Lifestyle" },
-  { src: "/images/lifestyle/lifestyle6.jpg", alt: "Lifestyle shoot 6", category: "Lifestyle" },
+  { src: "/images/hero/hero1.webp", alt: "Event photography", category: "Events" },
+  { src: "/images/hero/hero3.webp", alt: "Event photography", category: "Events" },
+  { src: "/images/hero/hero4.webp", alt: "Event photography", category: "Events" },
+  { src: "/images/hero/hero5.webp", alt: "Graduation photography", category: "Graduation" },
+  { src: "/images/portraits/portrait1.webp", alt: "Portrait session 1", category: "Portrait" },
+  { src: "/images/portraits/portrait2.webp", alt: "Portrait session 2", category: "Portrait" },
+  { src: "/images/portraits/portrait3.webp", alt: "Portrait session 3", category: "Portrait" },
+  { src: "/images/portraits/portrait4.webp", alt: "Portrait session 4", category: "Portrait" },
+  { src: "/images/portraits/portrait5.webp", alt: "Portrait session 5", category: "Portrait" },
+  { src: "/images/portraits/portrait6.webp", alt: "Portrait session 6", category: "Portrait" },
+  { src: "/images/portraits/portrait7.webp", alt: "Portrait session 7", category: "Portrait" },
+  { src: "/images/portraits/portrait8.webp", alt: "Portrait session 8", category: "Portrait" },
+  { src: "/images/portraits/portrait9.webp", alt: "Portrait session 9", category: "Portrait" },
+  { src: "/images/graduations/graduation1.webp", alt: "Graduation session 1", category: "Graduation" },
+  { src: "/images/graduations/graduation2.webp", alt: "Graduation session 2", category: "Graduation" },
+  { src: "/images/graduations/graduation3.webp", alt: "Graduation session 3", category: "Graduation" },
+  { src: "/images/graduations/graduation4.webp", alt: "Graduation session 4", category: "Graduation" },
+  { src: "/images/graduations/graduation5.webp", alt: "Graduation session 5", category: "Graduation" },
+  { src: "/images/graduations/graduation6.webp", alt: "Graduation session 6", category: "Graduation" },
+  { src: "/images/graduations/graduation7.webp", alt: "Graduation session 7", category: "Graduation" },
+  { src: "/images/events/event1.webp", alt: "Event coverage 1", category: "Events" },
+  { src: "/images/events/event2.webp", alt: "Event coverage 2", category: "Events" },
+  { src: "/images/events/event3.webp", alt: "Event coverage 3", category: "Events" },
+  { src: "/images/events/event4.webp", alt: "Event coverage 4", category: "Events" },
+  { src: "/images/events/event5.webp", alt: "Event coverage 5", category: "Events" },
+  { src: "/images/events/event6.webp", alt: "Event coverage 6", category: "Events" },
+  { src: "/images/events/event7.webp", alt: "Event coverage 7", category: "Events" },
+  { src: "/images/events/event8.webp", alt: "Event coverage 8", category: "Events" },
+  { src: "/images/events/event9.webp", alt: "Event coverage 9", category: "Events" },
+  { src: "/images/events/event10.webp", alt: "Event coverage 10", category: "Events" },
+  { src: "/images/events/event11.webp", alt: "Event coverage 11", category: "Events" },
+  { src: "/images/lifestyle/lifestyle1.webp", alt: "Lifestyle shoot 1", category: "Lifestyle" },
+  { src: "/images/lifestyle/lifestyle2.webp", alt: "Lifestyle shoot 2", category: "Lifestyle" },
+  { src: "/images/lifestyle/lifestyle3.webp", alt: "Lifestyle shoot 3", category: "Lifestyle" },
+  { src: "/images/lifestyle/lifestyle4.webp", alt: "Lifestyle shoot 4", category: "Lifestyle" },
+  { src: "/images/lifestyle/lifestyle5.webp", alt: "Lifestyle shoot 5", category: "Lifestyle" },
+  { src: "/images/lifestyle/lifestyle6.webp", alt: "Lifestyle shoot 6", category: "Lifestyle" },
 ];
 
 const heroSlides = [
-  "/images/hero/hero1.jpg",
-  "/images/hero/hero2.jpg",
-  "/images/hero/hero3.jpg",
-  "/images/hero/hero4.jpg",
-  "/images/hero/hero5.jpg",
-  "/images/hero/hero6.jpg",
+  "/images/hero/hero1.webp",
+  "/images/hero/hero2.webp",
+  "/images/hero/hero3.webp",
+  "/images/hero/hero4.webp",
+  "/images/hero/hero5.webp",
+  "/images/hero/hero6.webp",
 ];
 
 const categories: CategoryKey[] = ["All", "Portrait", "Graduation", "Events", "Lifestyle"];
@@ -83,17 +83,14 @@ function HeroCarousel() {
 
   return (
     <div className="relative h-[66vh] min-h-[540px] w-full overflow-hidden rounded-[2rem] border border-white/10 bg-black sm:h-[72vh] lg:h-[82vh]">
-      {heroSlides.map((src, slideIndex) => (
-        <img
-          key={src}
-          src={src}
-          alt={`Featured work ${slideIndex + 1}`}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
-            index === slideIndex ? "opacity-100" : "opacity-0"
-          }`}
-          loading={slideIndex === 0 ? "eager" : "lazy"}
-        />
-      ))}
+      <img
+        src={heroSlides[index]}
+        alt={`Featured work ${index + 1}`}
+        className="absolute inset-0 h-full w-full object-cover"
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
+      />
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-black/10" />
 
@@ -186,6 +183,7 @@ function CategoryPage({
                   alt={image.alt}
                   className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
             </button>
@@ -403,6 +401,7 @@ export default function PhotographyPortfolioWebsite() {
                   alt={image.alt}
                   className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
             </div>
@@ -436,6 +435,7 @@ export default function PhotographyPortfolioWebsite() {
                       alt={category}
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
                       loading="lazy"
+                  decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between p-5">
@@ -460,9 +460,11 @@ export default function PhotographyPortfolioWebsite() {
           <div className="relative mx-auto w-full max-w-[420px]">
             <div className="aspect-[4/5] w-full overflow-hidden rounded-[2rem] border border-white/10 bg-black">
               <img
-                src="/images/about-me.jpg"
+                src="/images/about-me.webp"
                 alt="Hailsh Creative photographer portrait"
                 className="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
