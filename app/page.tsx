@@ -1,674 +1,147 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Instagram, Mail, Menu, X, ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { ArrowUpRight, Instagram, Mail, Menu, X } from "lucide-react";
 
-type CategoryKey = "All" | "Portrait" | "Graduation" | "Events" | "Lifestyle";
-
-type GalleryImage = {
-  src: string;
-  alt: string;
-  category: Exclude<CategoryKey, "All">;
+const portfolioUrl = "https://hailshcreative.pic-time.com/portfolio";
+const embeddedPortfolioUrl = "https://hailshcreative.pic-time.com/client?headless=true";
+const formEndpoint = "https://formspree.io/f/xeergwpg";
+const initialForm = {
+  name: "",
+  email: "",
+  service: "",
+  date: "",
+  details: "",
 };
 
-type LightboxImage = {
-  src: string;
-  alt: string;
-} | null;
-
-const brandLogo = "/logo/hailsh-creative-logo.png";
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/xeergwpg";
-
-const galleryImages: GalleryImage[] = [
-  { src: "/images/hero/hero1.webp", alt: "Event photography", category: "Events" },
-  { src: "/images/hero/hero3.webp", alt: "Event photography", category: "Events" },
-  { src: "/images/hero/hero4.webp", alt: "Event photography", category: "Events" },
-  { src: "/images/hero/hero5.webp", alt: "Graduation photography", category: "Graduation" },
-  { src: "/images/portraits/portrait1.webp", alt: "Portrait session 1", category: "Portrait" },
-  { src: "/images/portraits/portrait2.webp", alt: "Portrait session 2", category: "Portrait" },
-  { src: "/images/portraits/portrait3.webp", alt: "Portrait session 3", category: "Portrait" },
-  { src: "/images/portraits/portrait4.webp", alt: "Portrait session 4", category: "Portrait" },
-  { src: "/images/portraits/portrait5.webp", alt: "Portrait session 5", category: "Portrait" },
-  { src: "/images/portraits/portrait6.webp", alt: "Portrait session 6", category: "Portrait" },
-  { src: "/images/portraits/portrait7.webp", alt: "Portrait session 7", category: "Portrait" },
-  { src: "/images/portraits/portrait8.webp", alt: "Portrait session 8", category: "Portrait" },
-  { src: "/images/portraits/portrait9.webp", alt: "Portrait session 9", category: "Portrait" },
-  { src: "/images/graduations/graduation1.webp", alt: "Graduation session 1", category: "Graduation" },
-  { src: "/images/graduations/graduation2.webp", alt: "Graduation session 2", category: "Graduation" },
-  { src: "/images/graduations/graduation3.webp", alt: "Graduation session 3", category: "Graduation" },
-  { src: "/images/graduations/graduation4.webp", alt: "Graduation session 4", category: "Graduation" },
-  { src: "/images/graduations/graduation5.webp", alt: "Graduation session 5", category: "Graduation" },
-  { src: "/images/graduations/graduation6.webp", alt: "Graduation session 6", category: "Graduation" },
-  { src: "/images/graduations/graduation7.webp", alt: "Graduation session 7", category: "Graduation" },
-  { src: "/images/events/event1.webp", alt: "Event coverage 1", category: "Events" },
-  { src: "/images/events/event2.webp", alt: "Event coverage 2", category: "Events" },
-  { src: "/images/events/event3.webp", alt: "Event coverage 3", category: "Events" },
-  { src: "/images/events/event4.webp", alt: "Event coverage 4", category: "Events" },
-  { src: "/images/events/event5.webp", alt: "Event coverage 5", category: "Events" },
-  { src: "/images/events/event6.webp", alt: "Event coverage 6", category: "Events" },
-  { src: "/images/events/event7.webp", alt: "Event coverage 7", category: "Events" },
-  { src: "/images/events/event8.webp", alt: "Event coverage 8", category: "Events" },
-  { src: "/images/events/event9.webp", alt: "Event coverage 9", category: "Events" },
-  { src: "/images/events/event10.webp", alt: "Event coverage 10", category: "Events" },
-  { src: "/images/events/event11.webp", alt: "Event coverage 11", category: "Events" },
-  { src: "/images/lifestyle/lifestyle1.webp", alt: "Lifestyle shoot 1", category: "Lifestyle" },
-  { src: "/images/lifestyle/lifestyle2.webp", alt: "Lifestyle shoot 2", category: "Lifestyle" },
-  { src: "/images/lifestyle/lifestyle3.webp", alt: "Lifestyle shoot 3", category: "Lifestyle" },
-  { src: "/images/lifestyle/lifestyle4.webp", alt: "Lifestyle shoot 4", category: "Lifestyle" },
-  { src: "/images/lifestyle/lifestyle5.webp", alt: "Lifestyle shoot 5", category: "Lifestyle" },
-  { src: "/images/lifestyle/lifestyle6.webp", alt: "Lifestyle shoot 6", category: "Lifestyle" },
-];
-
-const heroSlides = [
-  "/images/hero/hero1.webp",
-  "/images/hero/hero2.webp",
-  "/images/hero/hero3.webp",
-  "/images/hero/hero4.webp",
-  "/images/hero/hero5.webp",
-  "/images/hero/hero6.webp",
-];
-
-const categories: CategoryKey[] = ["All", "Portrait", "Graduation", "Events", "Lifestyle"];
-
-function scrollToSection(id: string) {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+function scrollTo(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
 
-function HeroCarousel() {
-  const [index, setIndex] = useState(0);
+export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [form, setForm] = useState(initialForm);
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const prev = () => setIndex((current) => (current - 1 + heroSlides.length) % heroSlides.length);
-  const next = () => setIndex((current) => (current + 1) % heroSlides.length);
-
-  return (
-    <div className="relative h-[66vh] min-h-[540px] w-full overflow-hidden rounded-[2rem] border border-white/10 bg-black sm:h-[72vh] lg:h-[82vh]">
-      <img
-        src={heroSlides[index]}
-        alt={`Featured work ${index + 1}`}
-        className="absolute inset-0 h-full w-full object-cover"
-        loading="eager"
-        fetchPriority="high"
-        decoding="async"
-      />
-
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-black/10" />
-
-      <div className="absolute bottom-5 left-5 flex items-center gap-3 sm:bottom-7 sm:left-7">
-        <button
-          onClick={prev}
-          className="rounded-full border border-white/20 bg-black/40 p-3 text-white backdrop-blur transition hover:border-[#f3c94b] hover:text-[#f3c94b]"
-          aria-label="Previous slide"
-        >
-          <ChevronLeft size={20} />
-        </button>
-        <button
-          onClick={next}
-          className="rounded-full border border-white/20 bg-black/40 p-3 text-white backdrop-blur transition hover:border-[#f3c94b] hover:text-[#f3c94b]"
-          aria-label="Next slide"
-        >
-          <ChevronRight size={20} />
-        </button>
-      </div>
-
-      <div className="absolute bottom-6 right-6 flex gap-2">
-        {heroSlides.map((_, dotIndex) => (
-          <button
-            key={dotIndex}
-            onClick={() => setIndex(dotIndex)}
-            aria-label={`Go to slide ${dotIndex + 1}`}
-            className={`h-2.5 rounded-full transition-all ${index === dotIndex ? "w-8 bg-[#f3c94b]" : "w-2.5 bg-white/55"}`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function CategoryPage({
-  category,
-  onBack,
-}: {
-  category: Exclude<CategoryKey, "All">;
-  onBack: () => void;
-}) {
-  const [lightboxImage, setLightboxImage] = useState<LightboxImage>(null);
-  const images = galleryImages.filter((image) => image.category === category);
-
-  return (
-    <div className="min-h-screen bg-[#090909] text-white">
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#090909]/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <button onClick={onBack} className="flex items-center gap-3 text-left">
-            <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border border-[#f3c94b]/35 bg-[#f3c94b]/10">
-              <img src={brandLogo} alt="Hailsh Creative logo" className="h-full w-full object-cover" />
-            </div>
-            <div>
-              <p className="text-[1.35rem] font-black italic tracking-tight text-white sm:text-[1.55rem]">
-                Hailsh <span className="text-[#f3c94b]">Creative</span>
-              </p>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/60">Photography Portfolio</p>
-            </div>
-          </button>
-
-          <button
-            onClick={onBack}
-            className="rounded-full border border-white/15 px-4 py-2 text-sm font-bold text-white transition hover:border-[#f3c94b] hover:text-[#f3c94b]"
-          >
-            Back Home
-          </button>
-        </div>
-      </header>
-
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.35em] text-[#f3c94b]">Portfolio Category</p>
-            <h1 className="mt-3 text-4xl font-black uppercase tracking-tight sm:text-5xl">{category}</h1>
-          </div>
-          <p className="max-w-md text-sm font-semibold text-white/65"></p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {images.map((image) => (
-            <button
-              key={image.src}
-              type="button"
-              onClick={() => setLightboxImage({ src: image.src, alt: image.alt })}
-              className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#111111] text-left"
-            >
-              <div className="relative aspect-[4/5] w-full overflow-hidden bg-black">
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {lightboxImage && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
-          onClick={() => setLightboxImage(null)}
-        >
-          <button
-            type="button"
-            onClick={() => setLightboxImage(null)}
-            className="absolute right-5 top-5 rounded-full border border-white/20 bg-black/50 p-3 text-white transition hover:border-[#f3c94b] hover:text-[#f3c94b]"
-            aria-label="Close full screen image"
-          >
-            <X size={20} />
-          </button>
-          <img
-            src={lightboxImage.src}
-            alt={lightboxImage.alt}
-            className="max-h-[92vh] max-w-[95vw] rounded-[1.5rem] object-contain"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
-      )}
-    </div>
-  );
-}
-
-export default function PhotographyPortfolioWebsite() {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    instagram: "",
-    sessionType: "Portrait Session",
-    preferredDate: "",
-    location: "",
-    budget: "",
-    details: "",
-  });
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSubmitMessage("");
-    setIsSubmitting(true);
-
+  async function submitInquiry(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSubmitting(true);
+    setMessage("");
     try {
-      const response = await fetch(FORMSPREE_ENDPOINT, {
+      const response = await fetch(formEndpoint, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          ...formData,
-          _subject: `New ${formData.sessionType} Inquiry - ${formData.fullName || "Hailsh Creative"}`,
+          ...form,
+          _subject: `New ${form.service} inquiry from ${form.name}`,
         }),
       });
-
       if (!response.ok) throw new Error("Submission failed");
-
-      setSubmitMessage("Inquiry sent successfully. I will get back to you soon.");
-      setFormData({
-        fullName: "",
-        email: "",
-        phone: "",
-        instagram: "",
-        sessionType: "Portrait Session",
-        preferredDate: "",
-        location: "",
-        budget: "",
-        details: "",
-      });
+      setForm(initialForm);
+      setMessage("Thanks! Your inquiry is on its way. I’ll be in touch soon.");
     } catch {
-      setSubmitMessage("Something went wrong. Please try again.");
+      setMessage("The form could not send right now. Please email hailshbusiness@gmail.com.");
     } finally {
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
-  };
-
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<CategoryKey>("All");
-
-  const featuredImages = useMemo(() => galleryImages.slice(0, 8), []);
-
-  if (selectedCategory !== "All") {
-    return <CategoryPage category={selectedCategory} onBack={() => setSelectedCategory("All")} />;
   }
 
-  return (
-    <div className="min-h-screen bg-[#090909] text-white">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#090909]/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <button onClick={() => scrollToSection("home")} className="flex min-w-0 items-center gap-3 text-left">
-            <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border border-[#f3c94b]/35 bg-[#f3c94b]/10">
-              <img src={brandLogo} alt="Hailsh Creative logo" className="h-full w-full object-cover" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[1.35rem] font-black italic tracking-tight text-white sm:text-[1.55rem]">
-                Hailsh <span className="text-[#f3c94b]">Creative</span>
-              </p>
-              <p className="truncate text-[10px] font-bold uppercase tracking-[0.28em] text-white/50">Photography Portfolio</p>
-            </div>
-          </button>
+  const inputClass =
+    "w-full rounded-2xl border border-white/15 bg-black/35 px-4 py-3.5 text-base text-white outline-none transition placeholder:text-white/35 focus:border-[#f3c94b]";
+  const labelClass = "mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-white/70";
 
-          <nav className="hidden items-center gap-8 md:flex">
-            {[
-              { label: "Portfolio", href: "portfolio" },
-              { label: "Categories", href: "categories" },
-              { label: "Contact", href: "contact" },
-            ].map((item) => (
-              <button
-                key={item.label}
-                onClick={() => scrollToSection(item.href)}
-                className="text-sm font-black uppercase tracking-[0.18em] text-white/75 transition hover:text-[#f3c94b]"
-              >
-                {item.label}
-              </button>
+  return (
+    <main className="min-h-screen bg-[#090909] text-white">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#090909]/95 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+          <button onClick={() => scrollTo("home")} className="flex items-center gap-3 text-left">
+            <img src="/logo/hailsh-creative-logo.png" alt="" className="h-11 w-11 rounded-full object-cover" />
+            <span className="text-xl font-black italic tracking-tight">Hailsh <span className="text-[#f3c94b]">Creative</span></span>
+          </button>
+          <nav aria-label="Main navigation" className="hidden items-center gap-7 md:flex">
+            <button onClick={() => scrollTo("portfolio")} className="text-sm font-bold uppercase tracking-widest text-white/75 hover:text-[#f3c94b]">Portfolio</button>
+            <button onClick={() => scrollTo("about")} className="text-sm font-bold uppercase tracking-widest text-white/75 hover:text-[#f3c94b]">About</button>
+            <button onClick={() => scrollTo("booking")} className="rounded-full bg-[#f3c94b] px-5 py-2.5 text-sm font-black uppercase tracking-wider text-black">Book a session</button>
+          </nav>
+          <button onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation" aria-expanded={menuOpen} className="rounded-full border border-white/20 p-2 md:hidden">
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
+        {menuOpen && (
+          <nav aria-label="Mobile navigation" className="flex flex-col border-t border-white/10 px-6 py-2 md:hidden">
+            {([["Portfolio", "portfolio"], ["About", "about"], ["Book a session", "booking"]] as const).map(([label, id]) => (
+              <button key={id} onClick={() => { setMenuOpen(false); scrollTo(id); }} className="py-3 text-left font-bold uppercase tracking-wider">{label}</button>
             ))}
           </nav>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => scrollToSection("contact")}
-              className="hidden rounded-full bg-[#f3c94b] px-4 py-2 text-sm font-black uppercase tracking-[0.16em] text-black md:inline-flex"
-            >
-              Book
-            </button>
-            <button
-              onClick={() => setMenuOpen((current) => !current)}
-              className="rounded-full border border-white/15 p-2 text-white md:hidden"
-              aria-label="Toggle menu"
-            >
-              {menuOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
-          </div>
-        </div>
-
-        {menuOpen && (
-          <div className="border-t border-white/10 md:hidden">
-            <div className="mx-auto flex max-w-7xl flex-col px-4 py-3 sm:px-6">
-              {[
-                { label: "Portfolio", href: "portfolio" },
-                { label: "Categories", href: "categories" },
-                { label: "Contact", href: "contact" },
-              ].map((item) => (
-                <button
-                  key={item.label}
-                  onClick={() => {
-                    setMenuOpen(false);
-                    scrollToSection(item.href);
-                  }}
-                  className="py-3 text-left text-sm font-black uppercase tracking-[0.16em] text-white/80"
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          </div>
         )}
       </header>
 
-      <section id="home" className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8 lg:py-6">
-        <HeroCarousel />
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 pb-8 pt-3 sm:px-6 lg:px-8 lg:pb-12">
-        <div className="max-w-4xl">
-          <p className="text-xs font-black uppercase tracking-[0.4em] text-[#f3c94b]">DMV Photographer</p>
-          <h1 className="mt-4 text-4xl font-black uppercase leading-none tracking-tight text-white sm:text-6xl lg:text-7xl">
-            Capturing real presence.
-            <br />
-            Framing bold stories.
-          </h1>
-          <p className="mt-5 max-w-3xl text-sm font-bold uppercase tracking-[0.12em] text-white/72 sm:text-base">
-            Portrait photography, graduation sessions, event coverage, and lifestyle imagery created to feel polished, confident, and timeless.
-          </p>
+      <section id="home" className="mx-auto flex min-h-[58vh] max-w-7xl flex-col justify-center px-4 py-16 sm:px-6 lg:min-h-[65vh]">
+        <p className="text-xs font-black uppercase tracking-[0.35em] text-[#f3c94b]">DMV photographer</p>
+        <h1 className="mt-6 max-w-5xl text-5xl font-black uppercase leading-[0.95] tracking-tight sm:text-7xl lg:text-8xl">Images that feel like you.</h1>
+        <p className="mt-7 max-w-xl text-lg leading-relaxed text-white/70">Portraits, graduations, events, and lifestyle photography with a personal touch.</p>
+        <div className="mt-9 flex flex-wrap gap-3">
+          <button onClick={() => scrollTo("booking")} className="rounded-full bg-[#f3c94b] px-7 py-3.5 font-black uppercase tracking-wider text-black">Book your session</button>
+          <button onClick={() => scrollTo("portfolio")} className="rounded-full border border-white/25 px-7 py-3.5 font-black uppercase tracking-wider hover:border-[#f3c94b]">See the work</button>
         </div>
       </section>
 
-      <section id="portfolio" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-        <div className="mb-6 flex items-end justify-between gap-4">
+      <section id="portfolio" className="scroll-mt-20 border-t border-white/10 py-14">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <p className="text-xs font-black uppercase tracking-[0.35em] text-[#f3c94b]">Selected work</p>
+          <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 className="text-4xl font-black uppercase tracking-tight sm:text-5xl">The portfolio</h2>
+              <p className="mt-3 max-w-2xl text-white/65">Explore the latest work directly from my Pic-Time gallery. New photos appear here as the portfolio grows.</p>
+            </div>
+            <a href={portfolioUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#f3c94b] hover:underline">Open full gallery <ArrowUpRight size={17} /></a>
+          </div>
+          <div className="mt-8 overflow-hidden rounded-[1.5rem] border border-white/15 bg-[#151515]">
+            <iframe
+              title="Hailsh Creative Pic-Time portfolio"
+              src={embeddedPortfolioUrl}
+              loading="lazy"
+              className="block h-[640px] w-full bg-white sm:h-[780px] lg:h-[880px]"
+              referrerPolicy="strict-origin-when-cross-origin"
+            />
+          </div>
+          <p className="mt-4 text-sm text-white/50">If the gallery does not appear, <a href={portfolioUrl} target="_blank" rel="noopener noreferrer" className="text-[#f3c94b] underline">view it on Pic-Time</a>.</p>
+        </div>
+      </section>
+
+      <section id="about" className="scroll-mt-20 mx-auto max-w-7xl px-4 py-16 sm:px-6">
+        <div className="max-w-3xl">
+          <p className="text-xs font-black uppercase tracking-[0.35em] text-[#f3c94b]">About</p>
+          <h2 className="mt-3 text-4xl font-black uppercase tracking-tight sm:text-5xl">Hailsh Creative</h2>
+          <p className="mt-6 text-lg leading-relaxed text-white/70">I’m a DMV-based photographer creating clean, confident, timeless images. I’ll guide you through the session so you can feel comfortable, be yourself, and leave with photographs you love to share and keep.</p>
+        </div>
+      </section>
+
+      <section id="booking" className="scroll-mt-20 border-t border-white/10 py-16">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.35em] text-[#f3c94b]">Selected Work</p>
-            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight sm:text-5xl">Featured Portfolio</h2>
-            <p className="mt-3 max-w-2xl text-sm font-semibold text-white/65">
-              A curated first look at the kind of images clients book Hailsh Creative for most — clean portraits, graduation highlights, event moments, and lifestyle frames.
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-          {featuredImages.map((image) => (
-            <div
-              key={image.src}
-              className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#111111]"
-            >
-              <div className="relative aspect-[4/5] w-full overflow-hidden bg-black">
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section id="categories" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-        <div className="mb-6">
-          <p className="text-xs font-black uppercase tracking-[0.35em] text-[#f3c94b]">Browse</p>
-          <h2 className="mt-3 text-3xl font-black uppercase tracking-tight sm:text-5xl">Categories</h2>
-          <p className="mt-3 max-w-2xl text-sm font-semibold text-white/65">
-            Open each gallery to view a focused collection of work by session type.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {categories
-            .filter((category) => category !== "All")
-            .map((category) => {
-              const preview = galleryImages.find((image) => image.category === category);
-              return (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#111111] text-left transition hover:border-[#f3c94b]/45"
-                >
-                  <div className="relative aspect-[5/6] overflow-hidden">
-                    <img
-                      src={preview?.src}
-                      alt={category}
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
-                      loading="lazy"
-                  decoding="async"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between p-5">
-                      <div>
-                        <p className="text-xs font-black uppercase tracking-[0.25em] text-[#f3c94b]">Open Gallery</p>
-                        <h3 className="mt-2 text-2xl font-black uppercase">{category}</h3>
-                      </div>
-                      <div className="rounded-full border border-white/15 bg-black/35 p-3 text-white transition group-hover:border-[#f3c94b] group-hover:text-[#f3c94b]">
-                        <ArrowUpRight size={18} />
-                      </div>
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-        </div>
-      </section>
-
-      {/* ABOUT ME */}
-      <section id="about" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-14">
-        <div className="grid gap-8 md:grid-cols-[0.9fr_1.1fr] items-center">
-          <div className="relative mx-auto w-full max-w-[420px]">
-            <div className="aspect-[4/5] w-full overflow-hidden rounded-[2rem] border border-white/10 bg-black">
-              <img
-                src="/images/about-me.webp"
-                alt="Hailsh Creative photographer portrait"
-                className="h-full w-full object-cover"
-                loading="lazy"
-                decoding="async"
-              />
+            <p className="text-xs font-black uppercase tracking-[0.35em] text-[#f3c94b]">Let’s create</p>
+            <h2 className="mt-3 text-4xl font-black uppercase tracking-tight sm:text-5xl">Book a session</h2>
+            <p className="mt-5 max-w-md leading-relaxed text-white/65">Tell me a little about your shoot. I’ll follow up by email to discuss availability and the next steps.</p>
+            <div className="mt-8 flex flex-col gap-4">
+              <a href="https://instagram.com/hailsh_creative" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-white/75 hover:text-[#f3c94b]"><Instagram size={20} /> @hailsh_creative</a>
+              <a href="mailto:hailshbusiness@gmail.com" className="flex items-center gap-3 text-white/75 hover:text-[#f3c94b]"><Mail size={20} /> hailshbusiness@gmail.com</a>
             </div>
           </div>
-
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.35em] text-[#f3c94b]">About</p>
-            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight sm:text-5xl">Hailsh Creative</h2>
-
-            <div className="mt-5 space-y-4 text-sm font-semibold leading-7 text-white/75">
-              <p>
-                I’m a DMV-based photographer focused on capturing clean, confident, and timeless images. My work is built around helping people feel natural in front of the camera while still delivering strong, polished visuals.
-              </p>
-              <p>
-                I specialize in portraits, graduation sessions, events, and lifestyle content. Every shoot is approached with attention to lighting, composition, and detail so your photos feel intentional and high quality.
-              </p>
-              <p>
-                Whether it’s your first time in front of a camera or you shoot often, my goal is simple: create images that you actually want to use, post, and keep.
-              </p>
+          <form onSubmit={submitInquiry} className="rounded-[2rem] border border-white/10 bg-[#111] p-6 sm:p-8">
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div><label htmlFor="name" className={labelClass}>Name</label><input id="name" name="name" autoComplete="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Your name" className={inputClass} /></div>
+              <div><label htmlFor="email" className={labelClass}>Email</label><input id="email" name="email" type="email" autoComplete="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="you@example.com" className={inputClass} /></div>
+              <div><label htmlFor="service" className={labelClass}>What are you booking?</label><select id="service" name="service" required value={form.service} onChange={(e) => setForm({ ...form, service: e.target.value })} className={inputClass}><option value="" disabled>Choose a session</option><option>Portrait</option><option>Graduation</option><option>Event</option><option>Lifestyle</option><option>Other</option></select></div>
+              <div><label htmlFor="date" className={labelClass}>Preferred date</label><input id="date" name="date" type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className={inputClass} /></div>
             </div>
-
-            <div className="mt-6 flex flex-wrap gap-3">
-              <span className="rounded-full border border-white/10 bg-black/30 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-white/60">Portraits</span>
-              <span className="rounded-full border border-white/10 bg-black/30 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-white/60">Graduations</span>
-              <span className="rounded-full border border-white/10 bg-black/30 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-white/60">Events</span>
-              <span className="rounded-full border border-white/10 bg-black/30 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-white/60">Lifestyle</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="contact" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-14">
-        <div className="mb-6">
-          <p className="text-xs font-black uppercase tracking-[0.35em] text-[#f3c94b]">Get In Touch</p>
-          <h2 className="mt-3 text-3xl font-black uppercase tracking-tight sm:text-5xl">Book A Session</h2>
-          <p className="mt-3 max-w-2xl text-sm font-semibold text-white/65">
-            Share your vision, preferred date, and session details. Portraits, graduations, events, and creative shoots are all welcome.
-          </p>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-[0.78fr_1.22fr]">
-          <div className="rounded-[2rem] border border-white/10 bg-[#111111] p-6 sm:p-8">
-            <h3 className="text-2xl font-black uppercase">Why clients book Hailsh Creative</h3>
-            <div className="mt-6 space-y-5 text-sm font-semibold leading-7 text-white/70">
-              <p>
-                Sessions are designed to feel comfortable and guided, so you can focus on the moment while the final images still look strong, clean, and professional.
-              </p>
-              <p>
-                Whether you need solo portraits, graduation photos, event coverage, or lifestyle content, the goal is always the same: make the work feel personal and visually sharp.
-              </p>
-              <p>
-                For direct inquiries, you can also reach out on Instagram or by email.
-              </p>
-            </div>
-
-            <div className="mt-8 grid gap-4">
-              <a
-                href="https://instagram.com/hailshcreative"
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-[1.5rem] border border-white/10 bg-black/30 p-5 transition hover:border-[#f3c94b]/45"
-              >
-                <Instagram className="text-[#f3c94b]" size={22} />
-                <p className="mt-4 text-xs font-black uppercase tracking-[0.28em] text-white/50">Instagram</p>
-                <h3 className="mt-2 text-xl font-black">@hailshcreative</h3>
-              </a>
-
-              <a
-                href="mailto:hailshbusiness@gmail.com"
-                className="rounded-[1.5rem] border border-white/10 bg-black/30 p-5 transition hover:border-[#f3c94b]/45"
-              >
-                <Mail className="text-[#f3c94b]" size={22} />
-                <p className="mt-4 text-xs font-black uppercase tracking-[0.28em] text-white/50">Email</p>
-                <h3 className="mt-2 break-words text-xl font-black">hailshbusiness@gmail.com</h3>
-              </a>
-            </div>
-          </div>
-
-          <form onSubmit={handleSubmit} className="rounded-[2rem] border border-white/10 bg-[#111111] p-6 sm:p-8">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-xs font-black uppercase tracking-[0.2em] text-white/55">Full Name</label>
-                <input
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleInputChange}
-                  placeholder="Your full name"
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm font-semibold text-white outline-none transition placeholder:text-white/28 focus:border-[#f3c94b]/45"
-                  required
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-xs font-black uppercase tracking-[0.2em] text-white/55">Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="you@example.com"
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm font-semibold text-white outline-none transition placeholder:text-white/28 focus:border-[#f3c94b]/45"
-                  required
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-xs font-black uppercase tracking-[0.2em] text-white/55">Phone Number</label>
-                <input
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  placeholder="Best number to reach you"
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm font-semibold text-white outline-none transition placeholder:text-white/28 focus:border-[#f3c94b]/45"
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-xs font-black uppercase tracking-[0.2em] text-white/55">Instagram Handle</label>
-                <input
-                  name="instagram"
-                  value={formData.instagram}
-                  onChange={handleInputChange}
-                  placeholder="@yourinstagram"
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm font-semibold text-white outline-none transition placeholder:text-white/28 focus:border-[#f3c94b]/45"
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-xs font-black uppercase tracking-[0.2em] text-white/55">Session Type</label>
-                <select
-                  name="sessionType"
-                  value={formData.sessionType}
-                  onChange={handleInputChange}
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm font-semibold text-white outline-none transition focus:border-[#f3c94b]/45"
-                >
-                  <option>Portrait Session</option>
-                  <option>Graduation Session</option>
-                  <option>Event Coverage</option>
-                  <option>Lifestyle Session</option>
-                  <option>Creative Shoot</option>
-                  <option>Other</option>
-                </select>
-              </div>
-              <div>
-                <label className="mb-2 block text-xs font-black uppercase tracking-[0.2em] text-white/55">Preferred Date</label>
-                <input
-                  type="date"
-                  name="preferredDate"
-                  value={formData.preferredDate}
-                  onChange={handleInputChange}
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm font-semibold text-white outline-none transition focus:border-[#f3c94b]/45"
-                />
-              </div>
-            </div>
-
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-xs font-black uppercase tracking-[0.2em] text-white/55">Location</label>
-                <input
-                  name="location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                  placeholder="City, venue, or preferred area"
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm font-semibold text-white outline-none transition placeholder:text-white/28 focus:border-[#f3c94b]/45"
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-xs font-black uppercase tracking-[0.2em] text-white/55">Budget Range</label>
-                <input
-                  name="budget"
-                  value={formData.budget}
-                  onChange={handleInputChange}
-                  placeholder="Your estimated budget"
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm font-semibold text-white outline-none transition placeholder:text-white/28 focus:border-[#f3c94b]/45"
-                />
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <label className="mb-2 block text-xs font-black uppercase tracking-[0.2em] text-white/55">Tell Me About Your Shoot</label>
-              <textarea
-                name="details"
-                value={formData.details}
-                onChange={handleInputChange}
-                rows={6}
-                placeholder="Describe the kind of photos you want, the mood, outfits, location ideas, event details, or anything important for your session."
-                className="w-full rounded-[1.5rem] border border-white/10 bg-black/30 px-4 py-4 text-sm font-semibold text-white outline-none transition placeholder:text-white/28 focus:border-[#f3c94b]/45"
-              />
-            </div>
-
-            <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm font-semibold text-white/45">Your inquiry will be submitted directly to hailshbusiness@gmail.com.</p>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="rounded-full bg-[#f3c94b] px-7 py-3 text-sm font-black uppercase tracking-[0.16em] text-black transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70"
-              >
-                {isSubmitting ? "Sending..." : "Send Booking Inquiry"}
-              </button>
-            </div>
-
-            {submitMessage && (
-              <p className="mt-4 rounded-[1.25rem] border border-white/10 bg-black/30 px-4 py-3 text-sm font-semibold text-white/80">
-                {submitMessage}
-              </p>
-            )}
+            <div className="mt-5"><label htmlFor="details" className={labelClass}>Anything else? <span className="normal-case tracking-normal text-white/40">(optional)</span></label><textarea id="details" name="details" rows={4} value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} placeholder="Tell me about your ideas or location" className={inputClass} /></div>
+            <button type="submit" disabled={submitting} className="mt-6 w-full rounded-full bg-[#f3c94b] px-7 py-3.5 font-black uppercase tracking-wider text-black transition hover:opacity-90 disabled:opacity-60">{submitting ? "Sending…" : "Send inquiry"}</button>
+            <p role="status" aria-live="polite" className="mt-4 min-h-6 text-sm text-white/70">{message}</p>
           </form>
         </div>
       </section>
-    </div>
+    </main>
   );
 }
