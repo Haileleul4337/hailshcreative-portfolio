@@ -149,7 +149,7 @@ h2 em { color: var(--accent); }
   .hero { min-height: min(690px, calc(100svh - 68px)); }
   .hero-inner { padding-block: 72px 45px; }
   .hero-topline { max-width: 270px; font-size: 10px; line-height: 1.6; }
-  .hero h1 { margin: 37px 0 29px; font-size: clamp(61px, 13vw, 90px); letter-spacing: -.075em; }
+  .hero h1 { margin: 37px 0 29px; font-size: clamp(48px, 12vw, 80px); letter-spacing: -.075em; }
   .hero-bottom { align-items: end; }
   .hero-bottom p { max-width: 310px; font-size: 15px; }
   .round-link { width: 49px; height: 49px; }
