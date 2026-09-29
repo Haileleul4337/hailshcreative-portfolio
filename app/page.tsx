@@ -1,12 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ArrowDown, ArrowRight, ArrowUpRight, Check, Instagram, Mail, Menu, X } from "lucide-react";
 
 const portfolioUrl = "https://hailshcreative.pic-time.com/portfolio";
 const portfolioEmbed = "https://hailshcreative.pic-time.com/client?headless=true";
 const formEndpoint = "https://formspree.io/f/xeergwpg";
 const emptyForm = { name: "", email: "", service: "", date: "", details: "" };
+const samples = [
+  { src: "/portfolio/graduation.webp", alt: "Graduation portrait by Hailsh Creative at the Jefferson Memorial", title: "Milestones" },
+  { src: "/portfolio/heritage.webp", alt: "Portrait in Ethiopian dress on a staircase by Hailsh Creative", title: "Personal stories" },
+  { src: "/portfolio/portrait.webp", alt: "Portrait in a warm-toned hijab by Hailsh Creative", title: "Portraits" },
+];
 
 const services = [
   { number: "01", name: "Portraits", description: "For the moments you want to remember as yourself." },
@@ -58,8 +64,8 @@ export default function Home() {
       <header className="site-header">
         <div className="shell header-inner">
           <a href="#top" className="brand" aria-label="Hailsh Creative home">
-            <span className="brand-mark" aria-hidden="true">H<span>.</span></span>
-            <span className="brand-name">Hailsh <em>Creative</em></span>
+            <Image src="/logo/hailsh-mark.svg" alt="" width={48} height={48} className="brand-mark" priority />
+            <span className="brand-name"><strong>HAILSH</strong><small>CREATIVE PHOTOGRAPHY</small></span>
           </a>
           <nav className="desktop-nav" aria-label="Main navigation">
             <a href="#work">The work</a>
@@ -83,11 +89,18 @@ export default function Home() {
 
       <section id="top" className="hero">
         <div className="shell hero-inner">
-          <div className="hero-topline"><span className="small-rule" /> Photography in Washington, DC · Maryland · Virginia</div>
-          <h1>Photographs<br />that feel <em>like you.</em></h1>
-          <div className="hero-bottom">
+          <div className="hero-copy">
+            <div className="hero-topline"><span className="small-rule" /> Washington, DC · Maryland · Virginia</div>
+            <h1>Photographs<br />that feel <em>like you.</em></h1>
             <p>Considered photography for people and moments worth remembering. Relaxed in the moment. Beautiful for years to come.</p>
-            <a className="round-link" href="#work" aria-label="Explore the portfolio"><ArrowDown size={25} strokeWidth={1.4} /></a>
+            <div className="hero-actions">
+              <a href="#inquire" className="hero-book">Book a session <ArrowUpRight size={20} strokeWidth={1.6} /></a>
+              <a href="#work" className="hero-view">Explore the work <ArrowDown size={17} strokeWidth={1.6} /></a>
+            </div>
+          </div>
+          <div className="hero-media">
+            <Image src="/portfolio/cover.webp" alt="Portrait in traditional Ethiopian dress from the Hailsh Creative Pic-Time portfolio" fill sizes="(max-width: 760px) 100vw, 45vw" priority className="hero-image" />
+            <div className="hero-media-caption"><span>HAILSH CREATIVE</span><span>01 / SELECTED WORK</span></div>
           </div>
         </div>
         <div className="hero-footer shell"><span>Portraits / Graduations / Events / Lifestyle</span><span>Hailsh Creative — DMV</span></div>
@@ -99,6 +112,15 @@ export default function Home() {
             <div><p className="eyebrow">01 / The work</p><h2>Take a <em>closer look.</em></h2></div>
             <p className="heading-aside">Real moments, thoughtfully seen. Explore the latest images from my Pic-Time portfolio.</p>
           </div>
+          <div className="sample-grid">
+            {samples.map((sample, index) => (
+              <a className="sample-card" href={portfolioUrl} target="_blank" rel="noopener noreferrer" key={sample.src} aria-label={"Explore " + sample.title + " in the Pic-Time portfolio"}>
+                <div className="sample-photo"><Image src={sample.src} alt={sample.alt} fill sizes="(max-width: 680px) 85vw, (max-width: 900px) 45vw, 30vw" loading="lazy" /></div>
+                <div className="sample-caption"><span>0{index + 1} / {sample.title}</span><ArrowUpRight size={18} /></div>
+              </a>
+            ))}
+          </div>
+          <div className="full-gallery-heading"><span>Explore the complete portfolio</span><span>Updated on Pic-Time</span></div>
           <div className="portfolio-frame">
             <iframe title="Hailsh Creative photography portfolio" src={portfolioEmbed} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" />
           </div>
@@ -131,7 +153,7 @@ export default function Home() {
 
       <section id="about" className="about-section section-anchor">
         <div className="shell about-grid">
-          <div className="about-mark" aria-hidden="true"><span>H.</span><small>HAILSH CREATIVE<br />PHOTOGRAPHY</small></div>
+          <div className="about-mark" aria-hidden="true"><Image src="/logo/hailsh-mark.svg" alt="" width={170} height={170} /><small>HAILSH CREATIVE<br />PHOTOGRAPHY</small></div>
           <div className="about-copy">
             <p className="eyebrow">03 / Behind the camera</p>
             <h2>Good photos start with <em>feeling comfortable.</em></h2>
