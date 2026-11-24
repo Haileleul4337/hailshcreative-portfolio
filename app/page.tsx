@@ -10,9 +10,9 @@ const portfolioEmbed = "https://hailshcreative.pic-time.com/client?headless=true
 const formEndpoint = "https://formspree.io/f/xeergwpg";
 const emptyForm = { name: "", email: "", service: "", date: "", details: "" };
 const samples = [
-  { src: "/portfolio/graduation.webp", alt: "Graduation portrait by Hailsh Creative at the Jefferson Memorial", title: "Milestones" },
-  { src: "/portfolio/heritage.webp", alt: "Portrait in Ethiopian dress on a staircase by Hailsh Creative", title: "Personal stories" },
-  { src: "/portfolio/portrait.webp", alt: "Portrait in a warm-toned hijab by Hailsh Creative", title: "Portraits" },
+  { src: "/portfolio/graduate.webp", alt: "Smiling graduate in a black gown and gold hood holding her cap", title: "Milestones" },
+  { src: "/portfolio/embroidery.webp", alt: "Outdoor portrait in an embroidered Ethiopian dress beside carved wood", title: "Personal stories" },
+  { src: "/portfolio/studio.webp", alt: "Studio portrait in a pale mint hijab beside a mirror", title: "Portraits" },
 ];
 
 const services = [
@@ -99,10 +99,10 @@ export default function Home() {
               <a href="#work" className="hero-view">Explore the work <ArrowDown size={17} strokeWidth={1.6} /></a>
             </div>
           </div>
-          <div className="hero-media">
-            <Image src="/portfolio/cover.webp" alt="Portrait in traditional Ethiopian dress from the Hailsh Creative Pic-Time portfolio" fill sizes="(max-width: 760px) 100vw, 45vw" priority className="hero-image" />
+          <a className="hero-media" href={portfolioUrl} target="_blank" rel="noopener noreferrer" aria-label="Explore the Hailsh Creative Pic-Time portfolio">
+            <Image src="/portfolio/wedding.webp" alt="Bride and groom sharing a smile beneath a leafy canopy" fill unoptimized priority className="hero-image" />
             <div className="hero-media-caption"><span>HAILSH CREATIVE</span><span>01 / SELECTED WORK</span></div>
-          </div>
+          </a>
         </div>
         <div className="hero-footer shell"><span>Portraits / Graduations / Events / Lifestyle</span><span>Hailsh Creative — DMV</span></div>
       </section>
@@ -116,7 +116,7 @@ export default function Home() {
           <div className="sample-grid">
             {samples.map((sample, index) => (
               <a className="sample-card" href={portfolioUrl} target="_blank" rel="noopener noreferrer" key={sample.src} aria-label={"Explore " + sample.title + " in the Pic-Time portfolio"}>
-                <div className="sample-photo"><Image src={sample.src} alt={sample.alt} fill sizes="(max-width: 680px) 85vw, (max-width: 900px) 45vw, 30vw" loading="lazy" /></div>
+                <div className="sample-photo"><Image src={sample.src} alt={sample.alt} fill unoptimized loading="lazy" /></div>
                 <div className="sample-caption"><span>0{index + 1} / {sample.title}</span><ArrowUpRight size={18} /></div>
               </a>
             ))}
