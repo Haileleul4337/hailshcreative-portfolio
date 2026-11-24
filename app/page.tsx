@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ClientReviews from "./client-reviews";
 import Image from "next/image";
 import { ArrowDown, ArrowRight, ArrowUpRight, Check, Instagram, Mail, Menu, X } from "lucide-react";
 
@@ -162,6 +163,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <ClientReviews />
 
       <section id="inquire" className="inquire-section section-anchor">
         <div className="shell inquire-grid">
