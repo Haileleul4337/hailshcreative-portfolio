@@ -17,17 +17,24 @@ export default function ClientReviews() {
     load().catch(() => {});
     return () => controller.abort();
   }, []);
-  return <section id="reviews" className="shell section-anchor py-12">
-    <div className="flex flex-wrap items-center justify-between gap-4">
-      <h2 className="text-3xl font-semibold">Client reviews</h2>
-      <Link href="/reviews" className="rounded-full border border-[var(--line)] px-5 py-3">Leave a review</Link>
-    </div>
-    {reviews.length > 0 && <div className="mt-6 grid gap-4 md:grid-cols-3">
-      {reviews.map(item => <figure key={item.id} className="min-w-0 rounded-[2rem] border border-[var(--line)] bg-white/40 p-6">
-        <p aria-label={item.rating + " out of 5 stars"}>{"★".repeat(item.rating)}{"☆".repeat(5 - item.rating)}</p>
-        <blockquote className="my-4 whitespace-pre-line break-words text-[var(--ink)]">{item.review}</blockquote>
-        <figcaption className="break-words">{item.display_name}</figcaption>
-      </figure>)}
-    </div>}
-  </section>;
+  return (
+    <section id="reviews" className="review-band section-anchor">
+      <div className="shell">
+        <div className="review-heading">
+          <div>
+            <h2>Client <em>reviews.</em></h2>
+            <p>Had a session with me? I’d love to hear how it went.</p>
+          </div>
+          <Link href="/reviews" className="review-invite">Leave a review</Link>
+        </div>
+        {reviews.length > 0 && <div className="review-quotes">
+          {reviews.map(item => <figure key={item.id}>
+            <span role="img" aria-label={item.rating + " out of 5 stars"}>{"★".repeat(item.rating)}{"☆".repeat(5 - item.rating)}</span>
+            <blockquote>{item.review}</blockquote>
+            <figcaption>{item.display_name}</figcaption>
+          </figure>)}
+        </div>}
+      </div>
+    </section>
+  );
 }
