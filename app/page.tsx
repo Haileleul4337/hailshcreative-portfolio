@@ -154,7 +154,13 @@ export default function Home() {
 
       <section id="about" className="about-section section-anchor">
         <div className="shell about-grid">
-          <div className="about-mark" aria-hidden="true"><Image src="/logo/hailsh-mark.svg" alt="" width={170} height={170} /><small>HAILSH CREATIVE<br />PHOTOGRAPHY</small></div>
+          <a className="about-photo" href={portfolioUrl} target="_blank" rel="noopener noreferrer" aria-label="View more Hailsh Creative photography on Pic-Time">
+            <Image src="/portfolio/coffee-portrait.webp" alt="Studio portrait of a woman in a warm brown hijab holding a coffee cup" fill unoptimized />
+            <span className="about-signature">
+              <Image src="/logo/hailsh-mark.svg" alt="" width={40} height={40} />
+              <span>Hailsh Creative</span>
+            </span>
+          </a>
           <div className="about-copy">
             <p className="eyebrow">03 / Behind the camera</p>
             <h2>Good photos start with <em>feeling comfortable.</em></h2>

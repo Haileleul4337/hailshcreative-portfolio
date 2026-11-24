@@ -101,9 +101,10 @@ h2 em { color: var(--accent); }
 
 .about-section { background: #292720; color: #f7f3e9; padding: 120px 0; }
 .about-grid { display: grid; grid-template-columns: 42% 1fr; gap: clamp(55px, 10vw, 150px); align-items: center; }
-.about-mark { min-height: 475px; padding: 38px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; border: 1px solid rgba(247,243,233,.25); background: radial-gradient(circle at 80% 15%, #62513d, transparent 62%), #39352d; }
-.about-mark img { width: 170px; height: 170px; }
-.about-mark small { font-size: 11px; font-weight: 700; letter-spacing: .18em; line-height: 1.8; }
+.about-photo { position: relative; isolation: isolate; display: block; width: 100%; aspect-ratio: 4 / 5; max-height: 630px; overflow: hidden; background: #39352d; }
+.about-photo > img { object-fit: cover; object-position: 50% 36%; }
+.about-photo::after { content: ""; position: absolute; inset: 65% 0 0; background: linear-gradient(transparent, rgba(0,0,0,.64)); pointer-events: none; }
+.about-signature { position: absolute; z-index: 1; bottom: 20px; left: 20px; display: flex; gap: 10px; align-items: center; color: white; font: 1.1rem Georgia, serif; }
 .about-copy .eyebrow { color: #c6a57b; }
 .about-copy h2 { max-width: 670px; margin-bottom: 32px; }
 .about-copy h2 em { color: #c6a57b; }
@@ -152,7 +153,6 @@ h2 em { color: var(--accent); }
   .hero h1 { max-width: 740px; font-size: clamp(60px, 9vw, 90px); }
   .hero-media { height: 540px; min-height: 0; }
   .services-grid, .about-grid, .inquire-grid { grid-template-columns: 1fr; gap: 60px; }
-  .about-mark { min-height: 320px; }
   .services-section, .about-section, .inquire-section, .work-section { padding-block: 90px; }
   .inquire-intro h2 br { display: none; }
   .contact-links { margin-top: 30px; }
@@ -189,8 +189,6 @@ h2 em { color: var(--accent); }
   .portfolio-tail { align-items: start; flex-direction: column; line-height: 1.5; }
   .service-row { grid-template-columns: 25px 1fr 21px; gap: 12px; padding-block: 24px; }
   .service-copy strong { font-size: 28px; }
-  .about-mark { min-height: 290px; }
-  .about-mark img { width: 125px; height: 125px; }
   .inquiry-form { padding: 27px 20px 31px; }
   .form-grid { grid-template-columns: 1fr; gap: 21px; }
   .field-full { grid-column: auto; }
