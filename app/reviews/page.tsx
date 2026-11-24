@@ -40,7 +40,7 @@ export default function ReviewPage() {
       </header>
       <div className="review-spread">
         <div className="review-photograph">
-          <Image src="/portfolio/heritage.webp" alt="A Hailsh Creative portrait in Ethiopian dress" fill priority sizes="(max-width: 720px) 100vw, 46vw" />
+          <Image src="/portfolio/review-portrait.jpg" alt="Outdoor portrait of a woman wearing a white dress with colorful embroidery" fill priority unoptimized />
         </div>
         <div className="review-sheet">
           {status === "sent" ? <div role="status">

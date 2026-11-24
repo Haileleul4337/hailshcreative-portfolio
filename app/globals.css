@@ -208,7 +208,7 @@ h2 em { color: var(--accent); }
 .review-back { font-size: .9rem; text-decoration: underline; text-underline-offset: 5px; }
 .review-spread { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); padding-top: clamp(20px, 3vw, 42px); }
 .review-photograph { position: relative; min-height: 570px; background: var(--paper-deep); }
-.review-photograph img { object-fit: cover; object-position: center 40%; }
+.review-photograph img { object-fit: cover; object-position: center 42%; }
 .review-sheet { width: min(100%, 620px); padding: clamp(10px, 2vw, 30px) 0 clamp(20px, 2vw, 32px) clamp(32px, 6vw, 102px); align-self: center; }
 .review-sheet h1, .review-heading h2 { font: 400 clamp(3.3rem, 5.8vw, 6.2rem)/.96 Georgia, serif; letter-spacing: -.062em; margin: 0; }
 .review-sheet h1 em { color: #816342; }
@@ -244,8 +244,8 @@ h2 em { color: var(--accent); }
   .review-mast .brand { gap: 6px; font-size: 1.05rem; }
   .review-mast .brand img { width: 32px; height: 32px; }
   .review-spread { display: block; }
-  .review-photograph { min-height: 0; height: clamp(135px, 40vw, 245px); }
-  .review-photograph img { object-position: center 35%; }
+  .review-photograph { min-height: 0; height: clamp(240px, 81vw, 435px); }
+  .review-photograph img { object-position: center 39%; }
   .review-sheet { width: 100%; padding: 26px 0 32px; }
   .review-sheet h1 br { display: none; }
   .review-sheet h1 em::before { content: " "; }
